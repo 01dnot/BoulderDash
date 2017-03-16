@@ -1,6 +1,10 @@
 package inf101.v17.boulderdash.bdobjects;
 
+import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.ImagePattern;
+
+import java.util.Optional;
 
 import inf101.v17.boulderdash.maps.BDMap;
 
@@ -11,14 +15,20 @@ import inf101.v17.boulderdash.maps.BDMap;
  *
  */
 public class BDWall extends AbstractBDObject {
+	
+	private static Optional<ImagePattern> image = Optional.empty();
+	
 
 	public BDWall(BDMap owner) {
 		super(owner);
 	}
 
 	@Override
-	public Color getColor() {
-		return Color.BLACK;
+	public ImagePattern getColor() {
+		if(!image.isPresent()) {
+			image = Optional.of(new ImagePattern(new Image("file:graphics/wall.png")));
+		}
+		return image.get();
 	}
 
 	@Override

@@ -11,11 +11,13 @@ import inf101.v17.boulderdash.bdobjects.BDBug;
 import inf101.v17.boulderdash.bdobjects.BDDiamond;
 import inf101.v17.boulderdash.bdobjects.BDEmpty;
 import inf101.v17.boulderdash.bdobjects.BDPlayer;
+import inf101.v17.boulderdash.bdobjects.BDRock;
 import inf101.v17.boulderdash.bdobjects.BDSand;
 import inf101.v17.boulderdash.bdobjects.BDWall;
 import inf101.v17.boulderdash.bdobjects.IBDObject;
 import inf101.v17.datastructures.IGrid;
 import inf101.v17.datastructures.MyGrid;
+import java.util.HashMap;
 
 /**
  * An implementation of a map
@@ -34,7 +36,10 @@ public class BDMap {
 	 * frequently.
 	 */
 	protected BDPlayer player;
-
+/**
+ * A hashmap keeping the positions of the objects
+ */
+	protected HashMap<IBDObject,Position> hashMap = new HashMap<IBDObject,Position>();
 	/**
 	 * Main constructor of this class.
 	 * 
@@ -51,6 +56,7 @@ public class BDMap {
 	public BDMap(IGrid<Character> map) {
 		grid = new MyGrid<IBDObject>(map.getWidth(), map.getHeight(), null);
 		this.player = new BDPlayer(this);
+		hashMap.put(player, player.getPosition()); // Putter player i hashmap
 		fillGrid(map);
 	}
 
@@ -126,6 +132,7 @@ public class BDMap {
 		for (int x = 0; x < width; x++) {
 			for (int y = 0; y < height; y++) {
 				IBDObject obj = makeObject(inputmap.get(x, y), x, y);
+				hashMap.put(obj, new Position(x,y)); //putter posisjon inn i hashmap
 				grid.set(x, y, obj);
 			}
 		}
@@ -145,6 +152,10 @@ public class BDMap {
 			return this.player;
 		} else if (c == '*') {
 			return new BDWall(this);
+		} else if (c == 'd') {
+			return new BDDiamond(this);
+		}  else if(c == 'r') {
+			return new BDRock(this);
 		} else if (c == 'b') {
 			try {
 				return new BDBug(this, new Position(x, y), 1, 10);
@@ -244,9 +255,7 @@ public class BDMap {
 	 * @return
 	 */
 	public Position getPosition(IBDObject object) {
-		// TODO
-		
-		return null;
+		return hashMap.get(object);
 	}
 
 	/**
@@ -281,10 +290,17 @@ public class BDMap {
 			throw new IndexOutOfBoundsException();
 		}
 		grid.set(x, y, element);
+		hashMap.put(element, new Position(x,y)); // putter element i hashmap
 	}
-
+	/**
+	 * runs step-methods in all gameobjects in grid
+	 */
 	public void step() {
-		// TODO
-		
+		for(int x = 0; x<grid.getWidth(); x++) {
+			for(int y = 0; y<grid.getHeight(); y++) {
+				grid.get(x, y).step();
+			}
+		}
+
 	}
 }

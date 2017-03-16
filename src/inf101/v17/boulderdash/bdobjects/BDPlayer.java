@@ -1,7 +1,11 @@
 package inf101.v17.boulderdash.bdobjects;
 
+import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.ImagePattern;
+
+import java.util.Optional;
 
 import inf101.v17.boulderdash.Direction;
 import inf101.v17.boulderdash.IllegalMoveException;
@@ -15,7 +19,8 @@ import inf101.v17.boulderdash.maps.BDMap;
  *
  */
 public class BDPlayer extends AbstractBDMovingObject implements IBDKillable {
-
+   
+	private static Optional<ImagePattern> image = Optional.empty();
 	/**
 	 * Is the player still alive?
 	 */
@@ -36,8 +41,11 @@ public class BDPlayer extends AbstractBDMovingObject implements IBDKillable {
 	}
 
 	@Override
-	public Color getColor() {
-		return Color.BLUE;
+	public ImagePattern getColor() {
+		if(!image.isPresent()) {
+			image = Optional.of(new ImagePattern(new Image("file:graphics/player.png")));
+		}
+		return image.get();
 	}
 
 	/**
@@ -46,9 +54,18 @@ public class BDPlayer extends AbstractBDMovingObject implements IBDKillable {
 	public boolean isAlive() {
 		return alive;
 	}
-
+	/**
+	 * creates direction depending on key input.
+	 * @param key
+	 */
 	public void keyPressed(KeyCode key) {
-		// TODO
+		switch(key) {
+		case UP: askedToGo = Direction.NORTH; break;
+		case DOWN: askedToGo = Direction.SOUTH; break;
+		case LEFT: askedToGo = Direction.WEST; break;
+		case RIGHT: askedToGo = Direction.EAST;
+		}
+
 	}
 
 	@Override
@@ -67,11 +84,32 @@ public class BDPlayer extends AbstractBDMovingObject implements IBDKillable {
 
 	@Override
 	public void step() {
-		// TODO
+		Position playerPos = owner.getPosition(this);
+		if(askedToGo != null) {
+			boolean canMove = true;
+			Position nextPos = playerPos.copy().moveDirection(askedToGo);
+			try {
+				if(owner.canGo(nextPos)) {
+					if(owner.get(nextPos) instanceof BDDiamond) {
+						diamondCnt++;
+					} else if(owner.get(nextPos) instanceof BDBug) {
+						kill();
+					} else if(owner.get(nextPos) instanceof BDRock) {
+						canMove = ((BDRock)owner.get(nextPos)).push(askedToGo);
+					}
+					if(canMove) {
+						this.prepareMove(nextPos);
+					}
+				}
+			} catch(IllegalMoveException e) {
+				System.out.println("Illegal move");
+			}
+		}
+		askedToGo = null;
 		super.step();
 	}
-	
-	
+
+
 	@Override
 	public boolean isKillable() {
 		return true;
