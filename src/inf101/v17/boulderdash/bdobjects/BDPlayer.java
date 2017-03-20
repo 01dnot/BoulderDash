@@ -2,9 +2,11 @@ package inf101.v17.boulderdash.bdobjects;
 
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
+import javafx.scene.media.AudioClip;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 import inf101.v17.boulderdash.Direction;
@@ -19,8 +21,27 @@ import inf101.v17.boulderdash.maps.BDMap;
  *
  */
 public class BDPlayer extends AbstractBDMovingObject implements IBDKillable {
-   
+
+
+	private static ArrayList<ImagePattern> walkRightList = new ArrayList<ImagePattern>();
+	private static ArrayList<ImagePattern> walkLeftList = new ArrayList<ImagePattern>();
+	private static ArrayList<ImagePattern> standList = new ArrayList<ImagePattern>();
+
 	private static Optional<ImagePattern> image = Optional.empty();
+	private int walkingAnimationCounter;
+	private int standingAnimationCounter;
+	private static final int N_WALK_SPRITES = 8;
+	private static final int N_STAND_SPRITES = 25;
+	private static final int WAITING_TIME_TO_STOP = 10;
+	private int timeWaited = 0;
+	private static final  AudioClip emptyTileSound = new AudioClip("file:sound/walk_empty.aiff");
+	private static final AudioClip sandTileSound = new AudioClip("file:sound/walk_sand.aiff");
+	private static final AudioClip pickUpDiamondSound = new AudioClip("file:sound/diamond_collect.aiff");
+	private static final AudioClip killSound = new AudioClip("file:sound/playerKilled.aiff");
+
+
+
+	private KeyCode latestKeyPressed;
 	/**
 	 * Is the player still alive?
 	 */
@@ -38,14 +59,35 @@ public class BDPlayer extends AbstractBDMovingObject implements IBDKillable {
 
 	public BDPlayer(BDMap owner) {
 		super(owner);
+		walkingAnimationCounter = 0;
+		standingAnimationCounter = 0;
 	}
 
 	@Override
 	public ImagePattern getColor() {
 		if(!image.isPresent()) {
-			image = Optional.of(new ImagePattern(new Image("file:graphics/player.png")));
+			int startFrom = 0;
+			Image walkingImage = new Image("file:graphics/walkingSprite.png");
+			Image standingImage = new Image("file:graphics/standingSprite.png");
+			for(int i=0; i<N_WALK_SPRITES; i++) {
+				walkLeftList.add(i,new ImagePattern(walkingImage, startFrom, 2, N_WALK_SPRITES, 2, true));
+				walkRightList.add(i,new ImagePattern(walkingImage, startFrom, 1, N_WALK_SPRITES, 2, true));
+				startFrom++;
+			}
+			startFrom = 0;
+			for(int i=0; i<N_STAND_SPRITES; i++) {
+				standList.add(i,new ImagePattern(standingImage, startFrom++, 1, N_STAND_SPRITES, 1, true));
+			}
+			image = Optional.of(walkLeftList.get(walkingAnimationCounter));
 		}
-		return image.get();
+
+		if(latestKeyPressed == KeyCode.LEFT) {
+			return walkLeftList.get(walkingAnimationCounter);
+		} else if(latestKeyPressed == KeyCode.RIGHT) {
+			return walkRightList.get(walkingAnimationCounter);
+		} else {
+			return standList.get(standingAnimationCounter);
+		}
 	}
 
 	/**
@@ -59,6 +101,7 @@ public class BDPlayer extends AbstractBDMovingObject implements IBDKillable {
 	 * @param key
 	 */
 	public void keyPressed(KeyCode key) {
+		latestKeyPressed = key;
 		switch(key) {
 		case UP: askedToGo = Direction.NORTH; break;
 		case DOWN: askedToGo = Direction.SOUTH; break;
@@ -71,6 +114,8 @@ public class BDPlayer extends AbstractBDMovingObject implements IBDKillable {
 	@Override
 	public void kill() {
 		this.alive = false;
+		killSound.play();
+		
 	}
 
 	/**
@@ -86,26 +131,50 @@ public class BDPlayer extends AbstractBDMovingObject implements IBDKillable {
 	public void step() {
 		Position playerPos = owner.getPosition(this);
 		if(askedToGo != null) {
+			timeWaited = 0;
 			boolean canMove = true;
 			Position nextPos = playerPos.copy().moveDirection(askedToGo);
 			try {
 				if(owner.canGo(nextPos)) {
-					if(owner.get(nextPos) instanceof BDDiamond) {
+					IBDObject nextObj = owner.get(nextPos);
+					if(nextObj instanceof BDDiamond) {
 						diamondCnt++;
-					} else if(owner.get(nextPos) instanceof BDBug) {
+					} else if(nextObj instanceof BDBug) {
 						kill();
-					} else if(owner.get(nextPos) instanceof BDRock) {
-						canMove = ((BDRock)owner.get(nextPos)).push(askedToGo);
+					} else if(nextObj instanceof BDRock) {
+						canMove = ((BDRock)nextObj).push(askedToGo);
 					}
+					
 					if(canMove) {
-						this.prepareMove(nextPos);
+						Optional<AudioClip> moveSound = 
+							nextObj instanceof BDSand ? Optional.of(sandTileSound)
+							: nextObj instanceof BDEmpty ? Optional.of(emptyTileSound)
+							: nextObj instanceof BDDiamond ? Optional.of(pickUpDiamondSound)
+							: Optional.empty();
+						prepareMove(nextPos, moveSound);
 					}
 				}
 			} catch(IllegalMoveException e) {
 				System.out.println("Illegal move");
 			}
+		} else {
+			if (timeWaited >= WAITING_TIME_TO_STOP ) {
+				latestKeyPressed = null;
+				timeWaited = 0;
+			} else {
+				timeWaited++;
+			}
 		}
+		walkingAnimationCounter = (walkingAnimationCounter+1)%N_WALK_SPRITES;
+		standingAnimationCounter = (standingAnimationCounter+1)%N_STAND_SPRITES;
+		
+		
+		
+		
 		askedToGo = null;
+		
+		
+		
 		super.step();
 	}
 

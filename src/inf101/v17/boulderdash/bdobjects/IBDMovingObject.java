@@ -1,8 +1,11 @@
 package inf101.v17.boulderdash.bdobjects;
 
+import java.util.Optional;
+
 import inf101.v17.boulderdash.Direction;
 import inf101.v17.boulderdash.IllegalMoveException;
 import inf101.v17.boulderdash.Position;
+import javafx.scene.media.AudioClip;
 
 /**
  * The main interface that all objects that move in the game have to implement.
@@ -35,14 +38,14 @@ public interface IBDMovingObject extends IBDObject {
 	 * @throws IllegalMoveException
 	 *             When the object cannot go to position (x, y)
 	 */
-	void prepareMove(int x, int y) throws IllegalMoveException;
+	void prepareMove(int x, int y, Optional<AudioClip> audio) throws IllegalMoveException;
 
 	/**
 	 * See {@link #prepareMove(int, int)}
 	 * 
 	 * @param pos
 	 */
-	void prepareMove(Position pos) throws IllegalMoveException;
+	void prepareMove(Position pos, Optional<AudioClip> audio) throws IllegalMoveException;
 
 	/**
 	 * Tries to prepare the move into direction dir from the current position of
@@ -50,5 +53,5 @@ public interface IBDMovingObject extends IBDObject {
 	 * 
 	 * @param dir
 	 */
-	void prepareMoveTo(Direction dir) throws IllegalMoveException;
+	void prepareMoveTo(Direction dir, Optional<AudioClip> audio) throws IllegalMoveException;
 }

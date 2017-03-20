@@ -1,6 +1,9 @@
 package inf101.v17.boulderdash.bdobjects;
 
+import java.util.Optional;
+
 import inf101.v17.boulderdash.maps.BDMap;
+import javafx.scene.media.AudioClip;
 
 /**
  * An abstract class that implements the common logic of objects that move in
@@ -9,7 +12,11 @@ import inf101.v17.boulderdash.maps.BDMap;
  * @author larsjaffke
  *
  */
+
+
 public abstract class AbstractBDKillingObject extends AbstractBDMovingObject {
+
+
 
 	public AbstractBDKillingObject(BDMap owner) {
 		super(owner);

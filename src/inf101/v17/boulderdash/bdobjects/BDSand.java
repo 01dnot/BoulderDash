@@ -27,7 +27,7 @@ public class BDSand extends AbstractBDObject {
 	@Override
 	public ImagePattern getColor() {
 		if(!image.isPresent()) {
-			image = Optional.of(new ImagePattern(new Image("file:graphics/boulder.png")));
+			image = Optional.of((new ImagePattern(new Image("file:graphics/sand.png"))));
 		}
 		return image.get();
 	}

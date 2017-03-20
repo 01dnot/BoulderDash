@@ -1,5 +1,6 @@
 package inf101.v17.boulderdash.bdobjects;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 import inf101.v17.boulderdash.Direction;
@@ -7,6 +8,7 @@ import inf101.v17.boulderdash.IllegalMoveException;
 import inf101.v17.boulderdash.Position;
 import inf101.v17.boulderdash.maps.BDMap;
 import javafx.scene.image.Image;
+import javafx.scene.media.AudioClip;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.paint.Paint;
@@ -20,12 +22,19 @@ public class BDRock extends AbstractBDFallingObject {
 
 	private static Optional<ImagePattern> image = Optional.empty();
 
+	private static ArrayList<AudioClip> rockClips = new ArrayList<>();
+	
 	/**
 	 * The standard constructor.
 	 * @param owner
 	 */
 	public BDRock(BDMap owner) {
 		super(owner);
+		if(rockClips.isEmpty()) {
+			rockClips.add(new AudioClip("file:sound/stone.aiff"));
+		}
+		soundClips = rockClips;
+
 	}
 
 	@Override
@@ -47,9 +56,9 @@ public class BDRock extends AbstractBDFallingObject {
 			throw new IllegalMoveException("Wrong push direction");
 		}
 		Position newPos = this.getPosition().copy().moveDirection(dir);
-		
+
 		if(owner.canGo(newPos) && owner.get(newPos) instanceof BDEmpty) {
-			prepareMove(newPos);
+			prepareMove(newPos, Optional.of(rockClips.get(random.nextInt(rockClips.size()))));
 			super.step();
 			return true;
 		}

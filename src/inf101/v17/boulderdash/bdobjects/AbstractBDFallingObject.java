@@ -1,11 +1,14 @@
 package inf101.v17.boulderdash.bdobjects;
 
+import java.util.ArrayList;
+import java.util.Optional;
 import java.util.Random;
 
 import inf101.v17.boulderdash.Direction;
 import inf101.v17.boulderdash.IllegalMoveException;
 import inf101.v17.boulderdash.Position;
 import inf101.v17.boulderdash.maps.BDMap;
+import javafx.scene.media.AudioClip;
 
 /**
  * Contains most of the logic associated with objects that fall such as rocks
@@ -15,6 +18,15 @@ import inf101.v17.boulderdash.maps.BDMap;
  *
  */
 public abstract class AbstractBDFallingObject extends AbstractBDKillingObject {
+
+	/**
+	 * Keeps the objects audioclips
+	 */
+	protected ArrayList<AudioClip> soundClips = new ArrayList<>();
+
+	/**
+	 * Random generator for falling direction
+	 */
 	Random random = new Random();
 	/**
 	 * A timeout between the moment when an object can fall (e.g. the tile
@@ -25,7 +37,7 @@ public abstract class AbstractBDFallingObject extends AbstractBDKillingObject {
 	protected static final int WAIT = 3;
 
 	protected boolean falling = false;
-	
+
 	private enum fallState {
 		CAN_FALL_LEFT, CAN_FALL_RIGHT, CAN_FALL_BOTH, CAN_NOT_FALL
 	}
@@ -59,32 +71,38 @@ public abstract class AbstractBDFallingObject extends AbstractBDKillingObject {
 			try {
 				// Get the object in the tile below.
 				Position below = pos.copy().moveDirection(Direction.SOUTH);
-				
+
 
 				IBDObject under = owner.get(below);
 
 
 				if (falling) {
+					fallState canFall = canObjectFall();
+					Optional<AudioClip> fallSound = Optional.of(soundClips.get(random.nextInt(soundClips.size())));
 					// fall one step if tile below is empty or killable
 					if (under instanceof BDEmpty || under instanceof IBDKillable) {
-						prepareMoveTo(Direction.SOUTH);
+						prepareMoveTo(Direction.SOUTH, fallSound);
+						
+					} else if(canFall == fallState.CAN_FALL_BOTH) {
+						if(random.nextBoolean()) {
+							prepareMoveTo(Direction.EAST, fallSound);
+						} else {
+							prepareMoveTo(Direction.WEST, fallSound);
+						}
+					} else if(canFall == fallState.CAN_FALL_LEFT) {
+						prepareMoveTo(Direction.WEST, fallSound);
+					} else if(canFall == fallState.CAN_FALL_RIGHT) {
+						prepareMoveTo(Direction.EAST, fallSound);
 					}
 
-					 else {
+					else {
 						falling = false;
 					}
-				} else if(falling = under instanceof BDEmpty) {
-					// start falling if tile below is empty
-			
+				} else {
+					// start falling if tile below is empty or can fall to one of the sides
+					falling = under instanceof BDEmpty || canObjectFall() != fallState.CAN_NOT_FALL;
 					fallingTimeWaited = 1;
 				}
-//				else {
-//					switch(canObjectFall()) {
-//					case CAN_FALL_BOTH: 
-//					case CAN_FALL_LEFT: prepareMoveTo(Direction.WEST); break;
-//					case CAN_FALL_RIGHT:prepareMoveTo(Direction.EAST); break;
-//					}
-//				}
 			} catch (IllegalMoveException e) {
 				// This should never happen.
 				System.out.println(e);
@@ -94,24 +112,36 @@ public abstract class AbstractBDFallingObject extends AbstractBDKillingObject {
 	}
 
 	private fallState canObjectFall() {
-		if(!(owner.get(getPosition().moveDirection(Direction.NORTH)) instanceof BDRock)) {
+		boolean rockUnder = owner.get(getPosition().moveDirection(Direction.SOUTH)) instanceof BDRock;
+		boolean wallUnder = owner.get(getPosition().moveDirection(Direction.SOUTH)) instanceof BDWall;
+		boolean diamondUnder = owner.get(getPosition().moveDirection(Direction.SOUTH)) instanceof BDDiamond;
+		if(!rockUnder && !wallUnder && !diamondUnder) { //If not lying on rock or wall, do nothing
 			return fallState.CAN_NOT_FALL;
 		}
-		boolean fallLeft = canObjectFallThisDirection(Direction.WEST);
-		boolean fallRight = canObjectFallThisDirection(Direction.EAST);
+		
+		boolean fallLeft = false;
+		boolean fallRight = false;
+		//Can possibly fall left if not on the leftmost tile
+		if(owner.getPosition(this).getX() >= 1) {
+			fallLeft = canObjectFallThisDirection(Direction.WEST);
+		}
+		//Can possibly fall right if not on the rightmost tile
+		if(owner.getPosition(this).getX() < owner.getWidth()-1) {
+			fallRight = canObjectFallThisDirection(Direction.EAST);
+		}
 		if(fallLeft && fallRight) return fallState.CAN_FALL_BOTH;
 		else if(fallLeft) return fallState.CAN_FALL_LEFT;
 		else if(fallRight) return fallState.CAN_FALL_RIGHT;
 		else return fallState.CAN_NOT_FALL;
-		
+
 	}
 
 	private boolean canObjectFallThisDirection(Direction d) {
 		IBDObject dirObject = owner.get(getPosition().moveDirection(d));
 		IBDObject dirSouthObject = owner.get(getPosition().moveDirection(d).moveDirection(Direction.SOUTH));
-		return dirObject instanceof BDEmpty && (dirSouthObject instanceof BDEmpty || dirSouthObject instanceof IBDObject);
+		return dirObject instanceof BDEmpty && dirSouthObject instanceof BDEmpty;
 	}
-	
+
 	@Override
 	public void step() {
 		// (Try to) fall if possible

@@ -26,7 +26,7 @@ public class BDWall extends AbstractBDObject {
 	@Override
 	public ImagePattern getColor() {
 		if(!image.isPresent()) {
-			image = Optional.of(new ImagePattern(new Image("file:graphics/wall.png")));
+			image = Optional.of((new ImagePattern(new Image("file:graphics/wall.png"))));
 		}
 		return image.get();
 	}

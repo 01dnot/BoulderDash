@@ -1,9 +1,11 @@
 package inf101.v17.boulderdash.bdobjects;
 
 import javafx.scene.image.Image;
+import javafx.scene.media.AudioClip;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 import inf101.v17.boulderdash.maps.BDMap;
@@ -16,19 +18,45 @@ import inf101.v17.boulderdash.maps.BDMap;
  */
 public class BDDiamond extends AbstractBDFallingObject {
 
+
+	private static ArrayList<ImagePattern> spriteList = new ArrayList<ImagePattern>();
 	private static Optional<ImagePattern> image = Optional.empty();
+	private int animationCounter;
+	final private int N_SPRITES = 8;
+	final private int N_SOUNDS = 8;
 
-
+	private static ArrayList<AudioClip> diamondSounds = new ArrayList<>();
+	
 	public BDDiamond(BDMap owner) {
 		super(owner);
+		animationCounter = 0;
+		if(diamondSounds.isEmpty()) {
+			for(int i=0; i<N_SOUNDS; i++) {
+				String file = "file:sound/diamond_" + (i+1) +".aiff";
+				diamondSounds.add(new AudioClip(file));
+			}			
+		}
+		soundClips = diamondSounds;
 	}
 
 	@Override
 	public ImagePattern getColor() {
 		if(!image.isPresent()) {
-			image = Optional.of(new ImagePattern(new Image("file:graphics/diamond.png")));
+		int startFrom = 0;
+		Image fileImage = new Image("file:graphics/diamondSprite.png");
+		for(int i=0; i<N_SPRITES; i++) {
+			spriteList.add(i,new ImagePattern(fileImage, startFrom++, 0, 8, 1, true));
 		}
-		return image.get();
+		image = Optional.of(spriteList.get(animationCounter));
+	}
+
+	return spriteList.get(animationCounter);
+}
+
+	@Override
+	public void step() {
+		animationCounter = (animationCounter+1)%N_SPRITES;
+		super.step();
 	}
 
 

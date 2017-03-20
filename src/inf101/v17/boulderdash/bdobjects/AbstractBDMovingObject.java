@@ -1,9 +1,12 @@
 package inf101.v17.boulderdash.bdobjects;
 
+import java.util.Optional;
+
 import inf101.v17.boulderdash.Direction;
 import inf101.v17.boulderdash.IllegalMoveException;
 import inf101.v17.boulderdash.Position;
 import inf101.v17.boulderdash.maps.BDMap;
+import javafx.scene.media.AudioClip;
 
 /**
  * This class implements most of the logic associated with moving objects in the
@@ -32,7 +35,7 @@ public abstract class AbstractBDMovingObject extends AbstractBDObject implements
 	}
 
 	@Override
-	public void prepareMove(int x, int y) throws IllegalMoveException {
+	public void prepareMove(int x, int y, Optional<AudioClip> audio) throws IllegalMoveException {
 		if (!owner.canGo(x, y)) {
 			throw new IllegalMoveException("Cannot move to (" + x + ", " + y + ")");
 		}
@@ -40,21 +43,26 @@ public abstract class AbstractBDMovingObject extends AbstractBDObject implements
 		// has
 		// to be done in the step()-method.
 		nextPos = new Position(x, y);
+		if(audio.isPresent()){
+			audio.get().play();
+		}
 	}
 
 	@Override
-	public void prepareMove(Position pos) throws IllegalMoveException {
-		prepareMove(pos.getX(), pos.getY());
+	public void prepareMove(Position pos, Optional<AudioClip> audio) throws IllegalMoveException {
+		prepareMove(pos.getX(), pos.getY(), audio);
 	}
 
 	@Override
-	public void prepareMoveTo(Direction dir) throws IllegalMoveException {
+	public void prepareMoveTo(Direction dir, Optional<AudioClip> audio) throws IllegalMoveException {
 		Position pos = owner.getPosition(this);
-
 		if (!owner.canGo(pos, dir)) {
 			throw new IllegalMoveException("Cannot move " + dir + " from (" + pos.getX() + ", " + pos.getY() + ")");
 		}
 		nextPos = pos.moveDirection(dir);
+		if(audio.isPresent()){
+				audio.get().play();
+		}
 	}
 
 	@Override

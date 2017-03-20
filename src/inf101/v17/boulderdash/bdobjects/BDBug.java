@@ -1,6 +1,7 @@
 package inf101.v17.boulderdash.bdobjects;
 
 import javafx.scene.image.Image;
+import javafx.scene.media.AudioClip;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 
@@ -21,8 +22,11 @@ import inf101.v17.boulderdash.maps.BDMap;
  *
  */
 public class BDBug extends AbstractBDKillingObject implements IBDKillable {
-	
-	private static Optional<ImagePattern> image = Optional.empty();
+
+	private static Optional<ArrayList<ImagePattern>> spriteList = Optional.empty();
+	private int animationCounter;
+	final private int N_SPRITES = 8;
+	public static final AudioClip BUG_KILLED_SOUND = new AudioClip("file:sound/bugKilled.aiff");	
 	/**
 	 * The amount of diamonds a bug turns into after it got killed.
 	 */
@@ -73,6 +77,7 @@ public class BDBug extends AbstractBDKillingObject implements IBDKillable {
 		super(owner);
 		this.initialPos = initialPos;
 		initTrajectory();
+		animationCounter = 0;
 	}
 
 	/**
@@ -92,14 +97,21 @@ public class BDBug extends AbstractBDKillingObject implements IBDKillable {
 		this.radius = radius;
 		this.pause = pause < MIN_PAUSE ? MIN_PAUSE : pause;
 		initTrajectory();
+		animationCounter = 0;
 	}
 
 	@Override
 	public ImagePattern getColor() {
-		if(!image.isPresent()) {
-			image = Optional.of(new ImagePattern(new Image("file:graphics/bug.png")));
+		if(!spriteList.isPresent()) {
+			int startFrom = 0;
+			Image fileImage = new Image("file:graphics/bugSprite.png");
+			ArrayList<ImagePattern> tempList = new ArrayList<ImagePattern>();
+			for(int i=0; i<N_SPRITES; i++) {
+				tempList.add(i,new ImagePattern(fileImage, startFrom++, 0, 8, 1, true));
+			}
+			spriteList = Optional.of(tempList);
 		}
-		return image.get();
+		return spriteList.get().get(animationCounter);
 	}
 
 	/**
@@ -135,6 +147,7 @@ public class BDBug extends AbstractBDKillingObject implements IBDKillable {
 		// If a bug is killed it turns into a set of diamonds. Find the
 		// DEATH_DIAMONDS nearest
 		// empty positions in the map and fill them with diamonds.
+		BUG_KILLED_SOUND.play();
 		Collection<Position> toDiamonds = owner.getNearestEmpty(owner.getPosition(this), DEATH_DIAMONDS);
 		for (Position p : toDiamonds) {
 			owner.set(p.getX(), p.getY(), new BDDiamond(owner));
@@ -155,7 +168,7 @@ public class BDBug extends AbstractBDKillingObject implements IBDKillable {
 			// cannot move.
 			IBDObject nextObject = owner.get(nextOne);
 			if (nextObject instanceof BDEmpty || nextObject instanceof IBDKillable) {
-				prepareMove(nextOne.getX(), nextOne.getY());
+				prepareMove(nextOne.getX(), nextOne.getY(), Optional.empty());
 			}
 		} catch (IllegalMoveException e) {
 			// If the bug cannot move where it's supposed to, e.g. when a wall
@@ -183,6 +196,7 @@ public class BDBug extends AbstractBDKillingObject implements IBDKillable {
 		} else {
 			movedSince++;
 		}
+		animationCounter = (animationCounter+1)%N_SPRITES;
 		super.step();
 	}
 
