@@ -301,6 +301,6 @@ public class BDMap {
 				grid.get(x, y).step();
 			}
 		}
-
+		
 	}
 }

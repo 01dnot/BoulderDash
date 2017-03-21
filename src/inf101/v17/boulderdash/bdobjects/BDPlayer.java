@@ -70,13 +70,13 @@ public class BDPlayer extends AbstractBDMovingObject implements IBDKillable {
 			Image walkingImage = new Image("file:graphics/walkingSprite.png");
 			Image standingImage = new Image("file:graphics/standingSprite.png");
 			for(int i=0; i<N_WALK_SPRITES; i++) {
-				walkLeftList.add(i,new ImagePattern(walkingImage, startFrom, 2, N_WALK_SPRITES, 2, true));
-				walkRightList.add(i,new ImagePattern(walkingImage, startFrom, 1, N_WALK_SPRITES, 2, true));
+				walkLeftList.add(i,new ImagePattern(walkingImage, startFrom, 2, N_WALK_SPRITES, 2.05, true));
+				walkRightList.add(i,new ImagePattern(walkingImage, startFrom, 1, N_WALK_SPRITES, 2.05, true));
 				startFrom++;
 			}
 			startFrom = 0;
 			for(int i=0; i<N_STAND_SPRITES; i++) {
-				standList.add(i,new ImagePattern(standingImage, startFrom++, 1, N_STAND_SPRITES, 1, true));
+				standList.add(i,new ImagePattern(standingImage, startFrom++, 1, N_STAND_SPRITES, 1.05, true));
 			}
 			image = Optional.of(walkLeftList.get(walkingAnimationCounter));
 		}
@@ -132,15 +132,17 @@ public class BDPlayer extends AbstractBDMovingObject implements IBDKillable {
 		Position playerPos = owner.getPosition(this);
 		if(askedToGo != null) {
 			timeWaited = 0;
-			boolean canMove = true;
 			Position nextPos = playerPos.copy().moveDirection(askedToGo);
 			try {
 				if(owner.canGo(nextPos)) {
+					boolean canMove = true;
 					IBDObject nextObj = owner.get(nextPos);
 					if(nextObj instanceof BDDiamond) {
 						diamondCnt++;
 					} else if(nextObj instanceof BDBug) {
 						kill();
+						canMove = false;
+						owner.set(this.getX(), this.getY(), new BDEmpty(owner)); //Replace dead player with empty tile. No blood or gore here.
 					} else if(nextObj instanceof BDRock) {
 						canMove = ((BDRock)nextObj).push(askedToGo);
 					}

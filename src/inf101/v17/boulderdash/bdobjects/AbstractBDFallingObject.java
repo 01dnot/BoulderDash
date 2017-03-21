@@ -27,7 +27,7 @@ public abstract class AbstractBDFallingObject extends AbstractBDKillingObject {
 	/**
 	 * Random generator for falling direction
 	 */
-	Random random = new Random();
+	protected static Random random = new Random();
 	/**
 	 * A timeout between the moment when an object can fall (e.g. the tile
 	 * underneath it becomes empty) and the moment it does. This is necessary to
@@ -38,6 +38,11 @@ public abstract class AbstractBDFallingObject extends AbstractBDKillingObject {
 
 	protected boolean falling = false;
 
+	/**
+	 * An enum that keeps the state of which way the object can fall
+	 * @author Daniel
+	 *
+	 */
 	private enum fallState {
 		CAN_FALL_LEFT, CAN_FALL_RIGHT, CAN_FALL_BOTH, CAN_NOT_FALL
 	}
@@ -71,19 +76,20 @@ public abstract class AbstractBDFallingObject extends AbstractBDKillingObject {
 			try {
 				// Get the object in the tile below.
 				Position below = pos.copy().moveDirection(Direction.SOUTH);
-
-
 				IBDObject under = owner.get(below);
 
-
 				if (falling) {
-					fallState canFall = canObjectFall();
+					fallState canFall = canObjectFallToSide();
+					//If possible get soundclip for the object
 					Optional<AudioClip> fallSound = Optional.of(soundClips.get(random.nextInt(soundClips.size())));
 					// fall one step if tile below is empty or killable
-					if (under instanceof BDEmpty || under instanceof IBDKillable) {
+					if ((under instanceof BDEmpty || under instanceof IBDKillable) && hardTileExistTwoBelow()) {
 						prepareMoveTo(Direction.SOUTH, fallSound);
-						
-					} else if(canFall == fallState.CAN_FALL_BOTH) {
+
+					} else if(under instanceof BDEmpty || under instanceof IBDKillable) {
+						prepareMoveTo(Direction.SOUTH, Optional.empty());
+					}
+					else if(canFall == fallState.CAN_FALL_BOTH) {
 						if(random.nextBoolean()) {
 							prepareMoveTo(Direction.EAST, fallSound);
 						} else {
@@ -100,7 +106,7 @@ public abstract class AbstractBDFallingObject extends AbstractBDKillingObject {
 					}
 				} else {
 					// start falling if tile below is empty or can fall to one of the sides
-					falling = under instanceof BDEmpty || canObjectFall() != fallState.CAN_NOT_FALL;
+					falling = under instanceof BDEmpty || canObjectFallToSide() != fallState.CAN_NOT_FALL;
 					fallingTimeWaited = 1;
 				}
 			} catch (IllegalMoveException e) {
@@ -111,14 +117,29 @@ public abstract class AbstractBDFallingObject extends AbstractBDKillingObject {
 		}
 	}
 
-	private fallState canObjectFall() {
+	//Checks that tile below is a hard object
+	private boolean hardTileExistTwoBelow() {
+		Position thisPos = owner.getPosition(this);
+		if(thisPos.getY() <= 1) {
+			return false;
+		}
+		Position twoUnder = thisPos.moveDirection(Direction.SOUTH).moveDirection(Direction.SOUTH);
+		return !(owner.get(twoUnder) instanceof BDBug || owner.get(twoUnder) instanceof BDEmpty);
+	}
+
+	/**
+	 * returns a fallState which indicates what sides the object can fall onto.
+	 * @return
+	 */
+	private fallState canObjectFallToSide() {
+		//object can only fall if it lays in a rock, wall og diamond
 		boolean rockUnder = owner.get(getPosition().moveDirection(Direction.SOUTH)) instanceof BDRock;
 		boolean wallUnder = owner.get(getPosition().moveDirection(Direction.SOUTH)) instanceof BDWall;
 		boolean diamondUnder = owner.get(getPosition().moveDirection(Direction.SOUTH)) instanceof BDDiamond;
 		if(!rockUnder && !wallUnder && !diamondUnder) { //If not lying on rock or wall, do nothing
 			return fallState.CAN_NOT_FALL;
 		}
-		
+
 		boolean fallLeft = false;
 		boolean fallRight = false;
 		//Can possibly fall left if not on the leftmost tile
@@ -135,7 +156,11 @@ public abstract class AbstractBDFallingObject extends AbstractBDKillingObject {
 		else return fallState.CAN_NOT_FALL;
 
 	}
-
+	/**
+	 * checks if the object has clear way to fall in a direction.
+	 * @param d
+	 * @return
+	 */
 	private boolean canObjectFallThisDirection(Direction d) {
 		IBDObject dirObject = owner.get(getPosition().moveDirection(d));
 		IBDObject dirSouthObject = owner.get(getPosition().moveDirection(d).moveDirection(Direction.SOUTH));
@@ -153,4 +178,6 @@ public abstract class AbstractBDFallingObject extends AbstractBDKillingObject {
 	public boolean isEmpty() {
 		return false;
 	}
+
+
 }

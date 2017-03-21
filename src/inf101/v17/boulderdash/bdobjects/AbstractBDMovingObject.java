@@ -43,6 +43,7 @@ public abstract class AbstractBDMovingObject extends AbstractBDObject implements
 		// has
 		// to be done in the step()-method.
 		nextPos = new Position(x, y);
+		//if exist audioclip: play it!
 		if(audio.isPresent()){
 			audio.get().play();
 		}
@@ -61,7 +62,7 @@ public abstract class AbstractBDMovingObject extends AbstractBDObject implements
 		}
 		nextPos = pos.moveDirection(dir);
 		if(audio.isPresent()){
-				audio.get().play();
+			audio.get().play();
 		}
 	}
 
@@ -76,5 +77,5 @@ public abstract class AbstractBDMovingObject extends AbstractBDObject implements
 		this.nextPos = null;
 	}
 
-	
+
 }

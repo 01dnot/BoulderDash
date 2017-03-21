@@ -22,10 +22,17 @@ import inf101.v17.boulderdash.maps.BDMap;
  *
  */
 public class BDBug extends AbstractBDKillingObject implements IBDKillable {
-
+	/**
+	 * The spritesheet which holds the animation of the bug-
+	 */
 	private static Optional<ArrayList<ImagePattern>> spriteList = Optional.empty();
+
 	private int animationCounter;
-	final private int N_SPRITES = 8;
+	
+	private static final int N_SPRITES = 8; //Holds the total of sprites
+	/**
+	 * The soundclip of the bug killing.
+	 */
 	public static final AudioClip BUG_KILLED_SOUND = new AudioClip("file:sound/bugKilled.aiff");	
 	/**
 	 * The amount of diamonds a bug turns into after it got killed.
@@ -103,6 +110,7 @@ public class BDBug extends AbstractBDKillingObject implements IBDKillable {
 	@Override
 	public ImagePattern getColor() {
 		if(!spriteList.isPresent()) {
+			//Fill the spriteList with the sprites from png
 			int startFrom = 0;
 			Image fileImage = new Image("file:graphics/bugSprite.png");
 			ArrayList<ImagePattern> tempList = new ArrayList<ImagePattern>();
@@ -111,7 +119,7 @@ public class BDBug extends AbstractBDKillingObject implements IBDKillable {
 			}
 			spriteList = Optional.of(tempList);
 		}
-		return spriteList.get().get(animationCounter);
+		return spriteList.get().get(animationCounter); //returns different sprite each step()
 	}
 
 	/**
