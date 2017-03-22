@@ -28,6 +28,10 @@ import java.util.HashMap;
 public class BDMap {
 
 	/**
+	 * Stores total amount of diamonds in map
+	 */
+	protected int totalDiamonds;
+	/**
 	 * Stores the data of the map
 	 */
 	protected IGrid<IBDObject> grid;
@@ -153,6 +157,7 @@ public class BDMap {
 		} else if (c == '*') {
 			return new BDWall(this);
 		} else if (c == 'd') {
+			totalDiamonds++;
 			return new BDDiamond(this);
 		}  else if(c == 'r') {
 			return new BDRock(this);
@@ -265,6 +270,13 @@ public class BDMap {
 	 */
 	public int getWidth() {
 		return grid.getWidth();
+	}
+	/**
+	 * get total amount of diamonds in map
+	 * @return
+	 */
+	public int getTotalDiamonds() {
+		return totalDiamonds;
 	}
 
 	/**

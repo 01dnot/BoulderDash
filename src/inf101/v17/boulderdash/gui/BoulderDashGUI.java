@@ -24,12 +24,16 @@ import javafx.stage.Stage;
  */
 public class BoulderDashGUI extends Application implements EventHandler<KeyEvent> {
 	
+	/**
+	 * Tilesize
+	 */
+	private static final int TILE_SIZE = 48;
 	private VBox vbox;
 	private Camera cam;
 	/**
 	 * Determines how many milliseconds pass between two steps of the program.
 	 */
-	private static final int SPEED = 70;
+	private static final int SPEED = 60;
 
 	private static BDMap theMap;
 
@@ -58,8 +62,9 @@ public class BoulderDashGUI extends Application implements EventHandler<KeyEvent
 		Group root = new Group();
 		int padding = BDMapComponent.CELL_PADDING;
 		
-		double width = Math.min(primaryScreenBounds.getWidth() - 40, cam.getWidth()*(16+padding)+padding);				//TODO
-		double height = Math.min(primaryScreenBounds.getHeight() - 100, cam.getHeigth()*(16+padding)+padding + 40);		//TODO
+		double height = Math.min(primaryScreenBounds.getHeight() - 100, cam.getHeigth()*(TILE_SIZE+padding)+padding + 40);		
+		double width = Math.min(primaryScreenBounds.getWidth() - 40, cam.getWidth()*(TILE_SIZE+padding));			
+
 		Scene scene = new Scene(root, width, height,
 				Color.BLACK);
 		stage.setScene(scene);
@@ -138,7 +143,6 @@ public class BoulderDashGUI extends Application implements EventHandler<KeyEvent
 		} else if (code == KeyCode.F) {
 			stage.setFullScreen(!stage.isFullScreen());
 		} else {
-
 			map.getPlayer().keyPressed(code);
 		}
 	}
