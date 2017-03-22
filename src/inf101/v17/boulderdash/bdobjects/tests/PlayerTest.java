@@ -9,6 +9,7 @@ import inf101.v17.boulderdash.bdobjects.BDBug;
 import inf101.v17.boulderdash.bdobjects.BDEmpty;
 import inf101.v17.boulderdash.bdobjects.BDPlayer;
 import inf101.v17.boulderdash.bdobjects.BDRock;
+import inf101.v17.boulderdash.bdobjects.BDWall;
 import inf101.v17.boulderdash.bdobjects.IBDObject;
 import inf101.v17.boulderdash.maps.BDMap;
 import inf101.v17.datastructures.IGrid;
@@ -21,7 +22,7 @@ public class PlayerTest {
 
 
 	@Test
-	public void playerMoveTest1() {
+	public void playerMoveTest() {
 		IGrid<Character> grid = new MyGrid<>(4, 4, ' ');
 		grid.set(2, 2, 'p');
 		map = new BDMap(grid);
@@ -55,7 +56,7 @@ public class PlayerTest {
 	}
 	
 	@Test
-	public void playerMoveTest2() {
+	public void playerMovesOldPositionIsEmptyTest() {
 		IGrid<Character> grid = new MyGrid<>(4, 4, ' ');
 		grid.set(2, 2, 'p');
 		map = new BDMap(grid);
@@ -75,7 +76,7 @@ public class PlayerTest {
 	}
 
 	@Test
-	public void pickUpDiamond() {
+	public void playerPicksUpDiamondTest() {
 		IGrid<Character> grid = new MyGrid<>(4, 4, ' ');
 		grid.set(2, 2, 'p');
 		grid.set(2, 3, 'd');
@@ -95,7 +96,7 @@ public class PlayerTest {
 		assertEquals(diamondCountAfter,(diamondCountBefore + 1));	
 	}
 	@Test
-	public void pushRock() {
+	public void playerPushRockTest() {
 		IGrid<Character> grid = new MyGrid<>(4, 4, ' ');
 		grid.set(0, 0, 'p');
 		grid.set(1, 0, 'r');
@@ -134,7 +135,9 @@ public class PlayerTest {
 				((BDPlayer)player).keyPressed(KeyCode.RIGHT);
 				map.step();
 				
-		assertFalse(map.get(3, 2) instanceof BDPlayer);
+		assertTrue(map.get(3, 2) instanceof BDWall);
+		assertTrue(map.get(2, 2) instanceof BDPlayer);
+
 	}
 
 }

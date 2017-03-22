@@ -124,7 +124,7 @@ public abstract class AbstractBDFallingObject extends AbstractBDKillingObject {
 			return false;
 		}
 		Position twoUnder = thisPos.moveDirection(Direction.SOUTH).moveDirection(Direction.SOUTH);
-		return !(owner.get(twoUnder) instanceof BDBug || owner.get(twoUnder) instanceof BDEmpty);
+		return !(owner.get(twoUnder) instanceof BDBug || owner.get(twoUnder) instanceof BDEmpty || owner.get(twoUnder) instanceof BDPlayer);
 	}
 
 	/**

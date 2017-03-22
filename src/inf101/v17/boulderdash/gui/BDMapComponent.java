@@ -11,9 +11,8 @@ import javafx.scene.canvas.GraphicsContext;
  *
  */
 public class BDMapComponent extends Canvas {
-
 	// parameters on the sizes of the cells.
-	private final int padding = 1;
+	public static final int CELL_PADDING = 1;
 
 	// The map to be painted
 	private BDMap map;
@@ -22,21 +21,25 @@ public class BDMapComponent extends Canvas {
 		this.map = map;
 	}
 
-	public void draw() {
+	public void draw(Camera cam, double vboxHeigth) {
 		GraphicsContext g = getGraphicsContext2D();
 		g.clearRect(0, 0, getWidth(), getHeight());
+		g.save();
+		double cellDim = Math.min(getWidth() / map.getWidth() - CELL_PADDING,
+				getHeight() / map.getHeight() - CELL_PADDING);
+		double scale = (getHeight()-vboxHeigth) / (cam.getHeigth()*(cellDim+CELL_PADDING)+CELL_PADDING);
+		g.scale(scale, scale);
 		
-		double cellDim = Math.min(getWidth() / map.getWidth() - padding,
-				getHeight() / map.getHeight() - padding);
 
-		int width = map.getWidth(), height = map.getHeight();
+		int width = cam.getWidth(), height = cam.getHeigth();
 		for (int x = 0; x < width; x++) {
 			for (int y = 0; y < height; y++) {
-				g.setFill(map.get(x, height - y - 1).getColor());
-				g.fillRect(x * (cellDim + padding) + padding, y * (cellDim + padding) + padding, cellDim,
+				g.setFill(map.get(cam.getX() + x, cam.getY() + height - y - 1).getColor());
+				g.fillRect(x * (cellDim + CELL_PADDING) + CELL_PADDING, y * (cellDim + CELL_PADDING) + CELL_PADDING, cellDim,
 						cellDim);
 			}
 		}
+		g.restore();
 	}
 
 }

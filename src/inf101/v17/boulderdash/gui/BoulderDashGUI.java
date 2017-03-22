@@ -23,10 +23,13 @@ import javafx.stage.Stage;
  *
  */
 public class BoulderDashGUI extends Application implements EventHandler<KeyEvent> {
+	
+	private VBox vbox;
+	private Camera cam;
 	/**
 	 * Determines how many milliseconds pass between two steps of the program.
 	 */
-	private static final int SPEED = 120;
+	private static final int SPEED = 70;
 
 	private static BDMap theMap;
 
@@ -46,14 +49,17 @@ public class BoulderDashGUI extends Application implements EventHandler<KeyEvent
 
 	@Override
 	public void start(Stage stage) throws Exception {
+		cam = new Camera(0, 0,theMap);
 		this.stage = stage;
 		double spacing = 10;
 		
 		Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
 
 		Group root = new Group();
-		double width = Math.min(primaryScreenBounds.getWidth() - 40, map.getWidth()*200);
-		double height = Math.min(primaryScreenBounds.getHeight() - 100, map.getWidth()*200);
+		int padding = BDMapComponent.CELL_PADDING;
+		
+		double width = Math.min(primaryScreenBounds.getWidth() - 40, cam.getWidth()*(16+padding)+padding);				//TODO
+		double height = Math.min(primaryScreenBounds.getHeight() - 100, cam.getHeigth()*(16+padding)+padding + 40);		//TODO
 		Scene scene = new Scene(root, width, height,
 				Color.BLACK);
 		stage.setScene(scene);
@@ -85,15 +91,21 @@ public class BoulderDashGUI extends Application implements EventHandler<KeyEvent
 
 		};
 
-		VBox vbox = new VBox();
-		vbox.setSpacing(10);
-		vbox.getChildren().add(message);
-		vbox.getChildren().add(mapComponent);
-		root.getChildren().add(vbox);
+		vbox = new VBox(); 							//TODO
+		vbox.setSpacing(0); 						//TODO
+		VBox testVBox = new VBox();					//TODO
+		testVBox.getChildren().add(message);		//TODO
+		testVBox.setPrefHeight(40);					//TODO
+		vbox.getChildren().add(testVBox);			//TODO
+		vbox.getChildren().add(mapComponent);		//TODO
+		root.getChildren().add(vbox);				//TODO
 
-		stage.addEventHandler(KeyEvent.KEY_PRESSED, this);
+		stage.addEventHandler(KeyEvent.KEY_PRESSED, this); //TODO
 		timer.start();
 		stage.show();
+		scene.heightProperty().addListener((obs, old, newH) -> {
+			
+		});
 	}
 
 	private BDMap map;
@@ -110,11 +122,12 @@ public class BoulderDashGUI extends Application implements EventHandler<KeyEvent
 	protected void step() {
 		if (map.getPlayer().isAlive()) {
 			map.step();
+			cam.step(map.getPlayer());
 			message.setText("Diamonds: " + map.getPlayer().numberOfDiamonds());
 		} else {
 			message.setText("Player is dead.");
 		}
-		mapComponent.draw();
+		mapComponent.draw(cam, vbox.getMaxHeight());
 	}
 
 	@Override

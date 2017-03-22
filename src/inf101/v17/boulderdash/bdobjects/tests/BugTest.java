@@ -24,7 +24,7 @@ public class BugTest {
 	}
 
 	@Test
-	public void bugMoves() {
+	public void bugMovesAfterMultipleSteps() {
 		IGrid<Character> grid = new MyGrid<>(4, 4, ' ');
 		grid.set(2, 2, 'b');
 		map = new BDMap(grid);
@@ -44,11 +44,11 @@ public class BugTest {
 			}
 
 		}
-
 		fail("Bug should have moved in 100 steps!");
 	}
+
 	@Test 
-	public void bugMovesTest2() {
+	public void bugDoesntMoveInWallTest() {
 		IGrid<Character> grid = new MyGrid<>(4, 4, '*');
 		grid.set(2, 2, 'b');
 		map = new BDMap(grid);
@@ -66,8 +66,9 @@ public class BugTest {
 			}
 		}
 	}
+
 	@Test 
-	public void bugMovesTest3() {
+	public void bugdoesntMoveInSandTest() {
 		IGrid<Character> grid = new MyGrid<>(4, 4, '#');
 		grid.set(2, 2, 'b');
 		map = new BDMap(grid);
@@ -85,28 +86,9 @@ public class BugTest {
 			}
 		}
 	}
-	@Test
-	public void positionTest() {
-		IGrid<Character> grid = new MyGrid<>(4, 4, '#');
-		grid.set(2, 2, 'b');
-		map = new BDMap(grid);
 
-		// find the bug
-		Position bugPos = new Position(2,2);
-		IBDObject bug = map.get(bugPos);
-		assertTrue(bug instanceof BDBug);
-
-		for(int i = 0; i < 100; i++) {
-			map.step();
-			if(map.get(bugPos) != bug) { // bug has moved
-				fail("Bug shouldnt move!");
-				return;
-			}
-		}
-	}
-	
 	@Test
-	public void killTest() {
+	public void bugKillsPlayerTest() {
 		IGrid<Character> grid = new MyGrid<>(4, 4, ' ');
 		grid.set(1, 1, 'b');
 		grid.set(1, 2, 'p');
@@ -115,6 +97,28 @@ public class BugTest {
 		for(int i = 0; i < 400; i++) {
 			map.step();
 		}
+		//After multiple step bug should have killed plater
 		assertFalse(map.getPlayer().isAlive());
+	}
+
+	@Test
+	public void killedBugSprayesDiamonds() {
+		IGrid<Character> grid = new MyGrid<>(4, 4, ' ');
+		grid.set(2, 2, 'b');
+		map = new BDMap(grid);
+		IBDObject obj = map.get(2, 2);
+		assertTrue(obj instanceof BDBug);
+		((BDBug)obj).kill();
+
+		for(int i=0; i<grid.getHeight(); i++) {
+			for(int j=0; j<grid.getWidth(); j++) {
+				if(map.get(j, i) instanceof BDDiamond) {
+					//Found a diamond!
+					return;
+				}
+			}
+		}
+		fail("Bug didnt spray any diamonds when killed");
+
 	}
 }
