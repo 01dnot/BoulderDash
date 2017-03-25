@@ -20,10 +20,15 @@ import javafx.scene.paint.Paint;
  */
 public class BDRock extends AbstractBDFallingObject {
 
+	/**
+	 * An ImagePattern containing the image of a rock
+	 */
 	private static Optional<ImagePattern> image = Optional.empty();
-
+	/**
+	 * An arrayList containing the sounds for the rock.
+	 */
 	private static ArrayList<AudioClip> rockClips = new ArrayList<>();
-	
+
 	/**
 	 * The standard constructor.
 	 * @param owner
@@ -39,6 +44,9 @@ public class BDRock extends AbstractBDFallingObject {
 
 	@Override
 	public ImagePattern getColor() {
+		/**
+		 * initialize the image for rock 
+		 */
 		if(!image.isPresent()) {
 			image = Optional.of(new ImagePattern(new Image("file:graphics/rock.png")));
 		}
@@ -58,7 +66,12 @@ public class BDRock extends AbstractBDFallingObject {
 		Position newPos = this.getPosition().copy().moveDirection(dir);
 
 		if(owner.canGo(newPos) && owner.get(newPos) instanceof BDEmpty) {
-			prepareMove(newPos, Optional.of(rockClips.get(random.nextInt(rockClips.size()))));
+			try {
+				prepareMove(newPos, Optional.of(rockClips.get(random.nextInt(rockClips.size()))));
+
+			} catch(IllegalMoveException e) {
+				return false;
+			}
 			super.step();
 			return true;
 		}

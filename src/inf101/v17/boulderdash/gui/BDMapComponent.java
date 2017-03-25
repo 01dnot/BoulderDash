@@ -11,8 +11,8 @@ import javafx.scene.canvas.GraphicsContext;
  *
  */
 public class BDMapComponent extends Canvas {
-	// parameters on the sizes of the cells.
-	public static final int CELL_PADDING = 1;
+	// parameters on the sizes between the cells.
+	public static final int CELL_PADDING = 0;
 
 	// The map to be painted
 	private BDMap map;

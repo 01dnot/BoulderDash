@@ -79,7 +79,7 @@ public abstract class AbstractBDFallingObject extends AbstractBDKillingObject {
 				IBDObject under = owner.get(below);
 
 				if (falling) {
-					fallState canFall = canObjectFallToSide();
+					fallState canFallToSide = canObjectFallToSide();
 					//If possible get soundclip for the object
 					Optional<AudioClip> fallSound = Optional.of(soundClips.get(random.nextInt(soundClips.size())));
 					// fall one step if tile below is empty or killable
@@ -89,15 +89,15 @@ public abstract class AbstractBDFallingObject extends AbstractBDKillingObject {
 					} else if(under instanceof BDEmpty || under instanceof IBDKillable) {
 						prepareMoveTo(Direction.SOUTH, Optional.empty());
 					}
-					else if(canFall == fallState.CAN_FALL_BOTH) {
+					else if(canFallToSide == fallState.CAN_FALL_BOTH) {
 						if(random.nextBoolean()) {
 							prepareMoveTo(Direction.EAST, fallSound);
 						} else {
 							prepareMoveTo(Direction.WEST, fallSound);
 						}
-					} else if(canFall == fallState.CAN_FALL_LEFT) {
+					} else if(canFallToSide == fallState.CAN_FALL_LEFT) {
 						prepareMoveTo(Direction.WEST, fallSound);
-					} else if(canFall == fallState.CAN_FALL_RIGHT) {
+					} else if(canFallToSide == fallState.CAN_FALL_RIGHT) {
 						prepareMoveTo(Direction.EAST, fallSound);
 					}
 
@@ -117,7 +117,10 @@ public abstract class AbstractBDFallingObject extends AbstractBDKillingObject {
 		}
 	}
 
-	//Checks that tile below is a hard object
+	/**
+	 * Checks that tile below is a hard object
+	 * @return
+	 */
 	private boolean hardTileExistTwoBelow() {
 		Position thisPos = owner.getPosition(this);
 		if(thisPos.getY() <= 1) {

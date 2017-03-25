@@ -2,10 +2,13 @@ package inf101.v17.boulderdash.bdobjects.tests;
 
 import static org.junit.Assert.*;
 
+import java.util.Optional;
+
 import org.junit.Before;
 import org.junit.Test;
 
 import inf101.v17.boulderdash.Direction;
+import inf101.v17.boulderdash.IllegalMoveException;
 import inf101.v17.boulderdash.Position;
 import inf101.v17.boulderdash.bdobjects.AbstractBDFallingObject;
 import inf101.v17.boulderdash.bdobjects.BDBug;
@@ -16,7 +19,7 @@ import inf101.v17.datastructures.IGrid;
 import inf101.v17.datastructures.MyGrid;
 
 public class BugTest {
-
+	
 	private BDMap map;
 
 	@Before
@@ -24,7 +27,7 @@ public class BugTest {
 	}
 
 	@Test
-	public void bugMovesAfterMultipleSteps() {
+	public void bugMovesAfterMultipleStepsTest() {
 		IGrid<Character> grid = new MyGrid<>(4, 4, ' ');
 		grid.set(2, 2, 'b');
 		map = new BDMap(grid);
@@ -61,8 +64,7 @@ public class BugTest {
 		for(int i = 0; i < 100; i++) {
 			map.step();
 			if(map.get(bugPos) != bug) { // bug has moved
-				fail("Bug shouldnt move!");
-				return;
+				fail("Bug shouldnt move when surounded by walls!");
 			}
 		}
 	}
@@ -81,8 +83,7 @@ public class BugTest {
 		for(int i = 0; i < 100; i++) {
 			map.step();
 			if(map.get(bugPos) != bug) { // bug has moved
-				fail("Bug shouldnt move!");
-				return;
+				fail("Bug shouldnt move when surounded by sand!");
 			}
 		}
 	}
@@ -108,6 +109,7 @@ public class BugTest {
 		map = new BDMap(grid);
 		IBDObject obj = map.get(2, 2);
 		assertTrue(obj instanceof BDBug);
+		
 		((BDBug)obj).kill();
 
 		for(int i=0; i<grid.getHeight(); i++) {
@@ -120,5 +122,58 @@ public class BugTest {
 		}
 		fail("Bug didnt spray any diamonds when killed");
 
+	}
+	
+	@Test
+	public void bugMovesInRightDirectionTest() {
+		IGrid<Character> grid = new MyGrid<>(5, 5, ' ');
+		grid.set(2, 2, 'b');
+		map = new BDMap(grid);
+		IBDObject obj = map.get(2, 2);
+		assertTrue(obj instanceof BDBug); 
+		
+		try {
+			((BDBug)obj).prepareMoveTo(Direction.EAST, Optional.empty());
+		} catch (IllegalMoveException e) {
+			fail("Bug couldnt move!");
+		}
+		map.step();
+		map.step();
+		map.step();
+		map.step();
+		assertTrue(map.get(3,2) instanceof BDBug);
+		
+		try {
+			((BDBug)obj).prepareMoveTo(Direction.WEST, Optional.empty());
+		} catch (IllegalMoveException e) {
+			fail("Bug couldnt move!");
+		}
+		map.step();
+		map.step();
+		map.step();
+		map.step();
+		assertTrue(map.get(2,2) instanceof BDBug);
+
+		try {
+			((BDBug)obj).prepareMoveTo(Direction.NORTH, Optional.empty());
+		} catch (IllegalMoveException e) {
+			fail("Bug couldnt move!");
+		}
+		map.step();
+		map.step();
+		map.step();
+		map.step();
+		assertTrue(map.get(2,2) instanceof BDBug);
+
+		try {
+			((BDBug)obj).prepareMoveTo(Direction.SOUTH, Optional.empty());
+		} catch (IllegalMoveException e) {
+			fail("Bug couldnt move!");
+		}
+		map.step();
+		map.step();
+		map.step();
+		map.step();
+		assertTrue(map.get(2,1) instanceof BDBug);
 	}
 }

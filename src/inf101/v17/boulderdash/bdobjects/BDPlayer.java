@@ -22,25 +22,38 @@ import inf101.v17.boulderdash.maps.BDMap;
  */
 public class BDPlayer extends AbstractBDMovingObject implements IBDKillable {
 
-
-	private static ArrayList<ImagePattern> walkRightList = new ArrayList<ImagePattern>();
-	private static ArrayList<ImagePattern> walkLeftList = new ArrayList<ImagePattern>();
-	private static ArrayList<ImagePattern> standList = new ArrayList<ImagePattern>();
-
-	private static Optional<ImagePattern> image = Optional.empty();
+	/**
+	 * Lists containing the sprite animations for walking left, right and standing still.
+	 */
+	private static Optional<ArrayList<ImagePattern>> walkRightList = Optional.empty();
+	private static Optional<ArrayList<ImagePattern>> walkLeftList = Optional.empty();
+	private static Optional<ArrayList<ImagePattern>> standList = Optional.empty();
+	/**
+	 * Animations get triggered by the animationsCounter which get updated in the step method. 
+	 */
 	private int walkingAnimationCounter;
 	private int standingAnimationCounter;
+
 	private static final int N_WALK_SPRITES = 8;
 	private static final int N_STAND_SPRITES = 25;
-	private static final int WAITING_TIME_TO_STOP = 10;
+	/**
+	 * The time to wait before going back to standing animation from walking.
+	 */
+	private static final int WAITING_TIME_TO_STOP_ANIMATION = 10;
 	private int timeWaited = 0;
+
+	/**
+	 * The sounds for BDPlayer
+	 */
 	private static final  AudioClip emptyTileSound = new AudioClip("file:sound/walk_empty.aiff");
 	private static final AudioClip sandTileSound = new AudioClip("file:sound/walk_sand.aiff");
 	private static final AudioClip pickUpDiamondSound = new AudioClip("file:sound/diamond_collect.aiff");
 	private static final AudioClip killSound = new AudioClip("file:sound/playerKilled.aiff");
 
 
-
+	/**
+	 * The last key from keyboard input
+	 */
 	private KeyCode latestKeyPressed;
 	/**
 	 * Is the player still alive?
@@ -65,28 +78,38 @@ public class BDPlayer extends AbstractBDMovingObject implements IBDKillable {
 
 	@Override
 	public ImagePattern getColor() {
-		if(!image.isPresent()) {
-			int startFrom = 0;
+		/**
+		 * initialize the images for player 
+		 */
+		if(!walkRightList.isPresent() || !walkLeftList.isPresent() || !standList.isPresent()) {
 			Image walkingImage = new Image("file:graphics/walkingSprite.png");
 			Image standingImage = new Image("file:graphics/standingSprite.png");
+			ArrayList<ImagePattern> tempLeft = new ArrayList<>();
+			ArrayList<ImagePattern> tempRight = new ArrayList<>();
+			ArrayList<ImagePattern> tempStand = new ArrayList<>();
+
+			int startFrom = 0;
 			for(int i=0; i<N_WALK_SPRITES; i++) {
-				walkLeftList.add(i,new ImagePattern(walkingImage, startFrom, 2, N_WALK_SPRITES, 2.05, true));
-				walkRightList.add(i,new ImagePattern(walkingImage, startFrom, 1, N_WALK_SPRITES, 2.05, true));
+				tempLeft.add(i,new ImagePattern(walkingImage, startFrom, 2, N_WALK_SPRITES, 2.05, true));
+				tempRight.add(i,new ImagePattern(walkingImage, startFrom, 1, N_WALK_SPRITES, 2.05, true));
 				startFrom++;
 			}
+			walkLeftList = Optional.of(tempLeft);
+			walkRightList = Optional.of(tempRight);
+
 			startFrom = 0;
 			for(int i=0; i<N_STAND_SPRITES; i++) {
-				standList.add(i,new ImagePattern(standingImage, startFrom++, 1, N_STAND_SPRITES, 1.05, true));
+				tempStand.add(i,new ImagePattern(standingImage, startFrom++, 1, N_STAND_SPRITES, 1.05, true));
 			}
-			image = Optional.of(walkLeftList.get(walkingAnimationCounter));
+			standList = Optional.of(tempStand);
 		}
-
+		//Return the animation for which the last keyboard input toggled.
 		if(latestKeyPressed == KeyCode.LEFT) {
-			return walkLeftList.get(walkingAnimationCounter);
+			return walkLeftList.get().get(walkingAnimationCounter);
 		} else if(latestKeyPressed == KeyCode.RIGHT) {
-			return walkRightList.get(walkingAnimationCounter);
+			return walkRightList.get().get(walkingAnimationCounter);
 		} else {
-			return standList.get(standingAnimationCounter);
+			return standList.get().get(standingAnimationCounter);
 		}
 	}
 
@@ -115,7 +138,7 @@ public class BDPlayer extends AbstractBDMovingObject implements IBDKillable {
 	public void kill() {
 		this.alive = false;
 		killSound.play();
-		
+
 	}
 
 	/**
@@ -130,6 +153,7 @@ public class BDPlayer extends AbstractBDMovingObject implements IBDKillable {
 	@Override
 	public void step() {
 		Position playerPos = owner.getPosition(this);
+		//If player is asked to move.
 		if(askedToGo != null) {
 			timeWaited = 0;
 			Position nextPos = playerPos.copy().moveDirection(askedToGo);
@@ -146,37 +170,33 @@ public class BDPlayer extends AbstractBDMovingObject implements IBDKillable {
 					} else if(nextObj instanceof BDRock) {
 						canMove = ((BDRock)nextObj).push(askedToGo);
 					}
-					
 					if(canMove) {
+						//Find correct audio depending on tile type and the prepare the move to this position.
 						Optional<AudioClip> moveSound = 
-							nextObj instanceof BDSand ? Optional.of(sandTileSound)
-							: nextObj instanceof BDEmpty ? Optional.of(emptyTileSound)
-							: nextObj instanceof BDDiamond ? Optional.of(pickUpDiamondSound)
-							: Optional.empty();
-						prepareMove(nextPos, moveSound);
+								nextObj instanceof BDSand ? Optional.of(sandTileSound)
+										: nextObj instanceof BDEmpty ? Optional.of(emptyTileSound)
+												: nextObj instanceof BDDiamond ? Optional.of(pickUpDiamondSound)
+														: Optional.empty();
+												prepareMove(nextPos, moveSound);
 					}
 				}
 			} catch(IllegalMoveException e) {
 				System.out.println("Illegal move");
 			}
 		} else {
-			if (timeWaited >= WAITING_TIME_TO_STOP ) {
+			//Keep hold on long time to return to standing animation.
+			if (timeWaited >= WAITING_TIME_TO_STOP_ANIMATION ) {
 				latestKeyPressed = null;
 				timeWaited = 0;
 			} else {
 				timeWaited++;
 			}
 		}
+		//Update the animation
 		walkingAnimationCounter = (walkingAnimationCounter+1)%N_WALK_SPRITES;
 		standingAnimationCounter = (standingAnimationCounter+1)%N_STAND_SPRITES;
-		
-		
-		
-		
+
 		askedToGo = null;
-		
-		
-		
 		super.step();
 	}
 

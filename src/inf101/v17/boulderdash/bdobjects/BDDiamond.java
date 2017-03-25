@@ -19,8 +19,7 @@ import inf101.v17.boulderdash.maps.BDMap;
 public class BDDiamond extends AbstractBDFallingObject {
 
 
-	private static ArrayList<ImagePattern> spriteList = new ArrayList<ImagePattern>();
-	private static Optional<ImagePattern> image = Optional.empty();
+	private static Optional<ArrayList<ImagePattern>> spriteList = Optional.empty();
 	private int animationCounter;
 	final private int N_SPRITES = 8;
 	final private int N_SOUNDS = 8;
@@ -41,20 +40,25 @@ public class BDDiamond extends AbstractBDFallingObject {
 
 	@Override
 	public ImagePattern getColor() {
-		if(!image.isPresent()) {
+		/**
+		 * initialize the images for player 
+		 */
+		if(!spriteList.isPresent()) {
 		int startFrom = 0;
 		Image fileImage = new Image("file:graphics/diamondSprite.png");
-		for(int i=0; i<N_SPRITES; i++) {
-			spriteList.add(i,new ImagePattern(fileImage, startFrom++, 0, 8, 1, true));
+		ArrayList<ImagePattern> tempList = new ArrayList<>();
+		for(int i = 0; i < N_SPRITES; i++) {
+			tempList.add(i,new ImagePattern(fileImage, startFrom++, 0, N_SPRITES, 1, true));
 		}
-		image = Optional.of(spriteList.get(animationCounter));
+		spriteList = Optional.of(tempList);
 	}
 
-	return spriteList.get(animationCounter);
+	return spriteList.get().get(animationCounter);
 }
 
 	@Override
 	public void step() {
+		// Update which picture to show
 		animationCounter = (animationCounter+1)%N_SPRITES;
 		super.step();
 	}

@@ -41,7 +41,7 @@ public class BDMap {
 	 */
 	protected BDPlayer player;
 /**
- * A hashmap keeping the positions of the objects
+ * A hashmap keeping the positions of the objects with objects as key.
  */
 	protected HashMap<IBDObject,Position> hashMap = new HashMap<IBDObject,Position>();
 	/**
@@ -305,7 +305,7 @@ public class BDMap {
 		hashMap.put(element, new Position(x,y)); // putter element i hashmap
 	}
 	/**
-	 * runs step-methods in all gameobjects in grid
+	 * runs step-methods in all objects in grid
 	 */
 	public void step() {
 		for(int x = 0; x<grid.getWidth(); x++) {
