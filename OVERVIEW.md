@@ -91,7 +91,11 @@ All moving objects can make sounds. It is made Optional and is send from the Obj
 #The BDAIPlayer
 I did not get time to finish the AIPlayer and it does not work 100% at the moment. It is based on the A* algoritme and will hopefully work as an extraordinary asset to this game in the future.
 
-#Why we need the getPosition() method
+#Do we need the getPosition() method?
+We could store the positions in the objects but this will result in a messy way of retreving and keeping call on all the objects positions. 
+We want to check what is in a position, not check what position a specific object have. 
+If the positions is stored in the objects this can make invariant in a way that two objects could have the same positions. The hashMap maps the positions to the objects and the grid maps the object to the positions.
+
 
 #Assets credits
 Credits to Czirkos Zoltan for the sound. [source](https://bitbucket.org/czirkoszoltan/gdash) 
