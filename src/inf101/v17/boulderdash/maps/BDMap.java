@@ -67,7 +67,7 @@ public class BDMap {
 	 */
 	public BDMap(IGrid<Character> map) {
 		grid = new MyGrid<IBDObject>(map.getWidth(), map.getHeight(), null);
-		this.player = new BDAIPlayer(this);
+		this.player = new BDPlayer(this);
 		//		this.player = new BDPlayer(this);
 
 		hashMap.put(player, player.getPosition()); // Putter player i hashmap
