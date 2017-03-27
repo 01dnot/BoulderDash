@@ -88,6 +88,9 @@ The image is sent to the GUI using the getColor() method.
 #Sounds
 All moving objects can make sounds. It is made Optional and is send from the Objects in the prepareMove methods.
 
+#The BDAIPlayer
+I did not get time to finish the AIPlayer and it does not work 100% at the moment. It is based on the A* algoritme and will hopefully work as an extraordinary asset to this game in the future.
+
 #Why we need the getPosition() method
 
 #Assets credits

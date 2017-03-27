@@ -46,7 +46,7 @@ public class BDAIPlayer extends BDPlayer {
 	@Override
 	public void step() {
 		//if found diamond, player isnt looking for diamond anymore
-		if(diamondCounter != diamondCnt) {
+		if(diamondCounter != diamondCnt ) {
 			lookingForDiamond = false;
 			diamondCounter = diamondCnt;
 		}
@@ -110,6 +110,9 @@ public class BDAIPlayer extends BDPlayer {
 	 */
 	private Deque<Direction> reconstructPath(Deque<Position> pathToGo) {
 		Deque<Direction> directionDeque = new ArrayDeque<>();
+		if(pathToGo.size() < 2) {
+			return directionDeque;
+		}
 		Position tempTo = pathToGo.pop();
 		Position tempFrom = pathToGo.pop();
 		directionDeque.push(findDirection(tempFrom, tempTo));
@@ -146,18 +149,11 @@ public class BDAIPlayer extends BDPlayer {
 	 */
 	private ArrayList<Position> checkSurroundings(Position pos) {
 		ArrayList<Position> posList = new ArrayList<>();
-
-		if(owner.canGo(pos.moveDirection(Direction.SOUTH))) {
-			posList.add(pos.moveDirection(Direction.SOUTH));
-		}
-		if(owner.canGo(pos.moveDirection(Direction.NORTH))) {
-			posList.add(pos.moveDirection(Direction.NORTH));
-
-		}if(owner.canGo(pos.moveDirection(Direction.WEST))) {
-			posList.add(pos.moveDirection(Direction.WEST));
-
-		}if(owner.canGo(pos.moveDirection(Direction.EAST))) {
-			posList.add(pos.moveDirection(Direction.EAST));
+		Direction[] dir = {Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST};
+		for(Direction d: dir) {
+			if(owner.canGo(pos.moveDirection(d)) && !(owner.get(pos.moveDirection(d)) instanceof BDRock)) {
+				posList.add(pos.moveDirection(d));
+			}
 		}
 		return posList;
 	}
