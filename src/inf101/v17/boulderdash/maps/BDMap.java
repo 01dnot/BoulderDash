@@ -42,7 +42,7 @@ public class BDMap {
 	 * A separate reference to the player, since it is accessed quite
 	 * frequently.
 	 */
-	protected BDAIPlayer player;
+	protected BDPlayer player;
 	/**
 	 * A hashmap keeping the positions of the objects with objects as key.
 	 */
@@ -68,6 +68,8 @@ public class BDMap {
 	public BDMap(IGrid<Character> map) {
 		grid = new MyGrid<IBDObject>(map.getWidth(), map.getHeight(), null);
 		this.player = new BDAIPlayer(this);
+		//		this.player = new BDPlayer(this);
+
 		hashMap.put(player, player.getPosition()); // Putter player i hashmap
 		fillGrid(map);
 	}

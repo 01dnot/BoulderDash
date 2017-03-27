@@ -39,6 +39,7 @@ public class FallingTest {
 
 		checkFall(new Position(0, 4));
 	}
+	
 	@Test
 	public void rockFallingTest2() {
 		IGrid<Character> grid = new MyGrid<>(2, 5, ' ');
@@ -58,7 +59,6 @@ public class FallingTest {
 		grid.set(0, 0, '*');
 		map = new BDMap(grid);
 
-
 		checkFall(new Position(0, 4));
 		checkFall(new Position(0, 3));
 		checkFall(new Position(0, 2));
@@ -73,7 +73,6 @@ public class FallingTest {
 		grid.set(0, 2, 'p');
 		grid.set(0, 0, '*');
 		map = new BDMap(grid);
-
 
 		checkFall(new Position(0, 4));
 		checkFall(new Position(0, 3));
@@ -97,6 +96,7 @@ public class FallingTest {
 		map.step();
 		assertTrue(map.getPlayer().isAlive());
 	}
+	
 	@Test
 	public void rockRestingOnPlayerDoesntKill() {
 		// rock on top of player doesn't kill player
@@ -202,7 +202,6 @@ public class FallingTest {
 
 		assertTrue(map.get(2, 0) instanceof BDRock);
 		assertTrue(map.get(3, 0) instanceof BDEmpty);
-
 	}
 
 	@Test
@@ -214,7 +213,6 @@ public class FallingTest {
 		IBDObject rock = map.get(0, 2);
 		assertTrue(rock instanceof BDRock);
 
-
 		try {
 			((BDRock)rock).push(Direction.NORTH);
 		} catch (IllegalMoveException e) {
@@ -223,7 +221,6 @@ public class FallingTest {
 
 		assertTrue(map.get(2, 0) instanceof BDRock);
 		assertTrue(map.get(3, 0) instanceof BDEmpty);
-
 	}
 
 	@Test
@@ -237,8 +234,6 @@ public class FallingTest {
 		IBDObject sand = map.get(1, 0);
 		assertTrue(sand instanceof BDSand);
 		assertTrue(rock instanceof BDRock);
-
-
 
 		try {
 			((BDRock)rock).push(Direction.WEST);
@@ -268,8 +263,6 @@ public class FallingTest {
 
 		IBDObject obj = map.get(0, 0);
 		assertTrue(obj instanceof BDRock);
-
-
 	}
 
 	@Test
@@ -318,5 +311,4 @@ public class FallingTest {
 		} else
 			return pos;
 	}
-
 }

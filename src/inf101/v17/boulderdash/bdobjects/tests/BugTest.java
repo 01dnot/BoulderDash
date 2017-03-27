@@ -45,7 +45,6 @@ public class BugTest {
 				// bug moved –  we're done
 				return;
 			}
-
 		}
 		fail("Bug should have moved in 100 steps!");
 	}

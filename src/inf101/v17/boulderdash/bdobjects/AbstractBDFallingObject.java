@@ -39,7 +39,7 @@ public abstract class AbstractBDFallingObject extends AbstractBDKillingObject {
 	protected boolean falling = false;
 
 	/**
-	 * An enum that keeps the state of which way the object can fall
+	 * An enum that keeps the state of which way an object can fall
 	 * @author Daniel
 	 *
 	 */
@@ -131,8 +131,8 @@ public abstract class AbstractBDFallingObject extends AbstractBDKillingObject {
 	}
 
 	/**
-	 * returns a fallState which indicates what sides the object can fall onto.
-	 * @return
+	 * Returns a fallState which indicates what sides the object can fall onto(or not).
+	 * @return fallState,
 	 */
 	private fallState canObjectFallToSide() {
 		//object can only fall if it lays in a rock, wall og diamond
@@ -157,12 +157,11 @@ public abstract class AbstractBDFallingObject extends AbstractBDKillingObject {
 		else if(fallLeft) return fallState.CAN_FALL_LEFT;
 		else if(fallRight) return fallState.CAN_FALL_RIGHT;
 		else return fallState.CAN_NOT_FALL;
-
 	}
 	/**
-	 * checks if the object has clear way to fall in a direction.
-	 * @param d
-	 * @return
+	 *Checks if the object has clear way to fall in a direction. Check that the tile in the direction and the one under is BDemoty. 
+	 * @param d. Directions
+	 * @return True if both tile is empty, else false
 	 */
 	private boolean canObjectFallThisDirection(Direction d) {
 		IBDObject dirObject = owner.get(getPosition().moveDirection(d));
@@ -181,6 +180,4 @@ public abstract class AbstractBDFallingObject extends AbstractBDKillingObject {
 	public boolean isEmpty() {
 		return false;
 	}
-
-
 }

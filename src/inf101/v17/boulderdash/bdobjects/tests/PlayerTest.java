@@ -51,8 +51,6 @@ public class PlayerTest {
 		((BDPlayer)player).keyPressed(KeyCode.DOWN);
 		map.step();
 		assertEquals(map.get(2,2), player);
-
-
 	}
 
 	@Test
@@ -95,6 +93,7 @@ public class PlayerTest {
 		int diamondCountAfter = ((BDPlayer)player).numberOfDiamonds();
 		assertEquals(diamondCountAfter,(diamondCountBefore + 1));	
 	}
+	
 	@Test
 	public void playerPushRockTest() {
 		IGrid<Character> grid = new MyGrid<>(4, 4, ' ');
@@ -115,7 +114,6 @@ public class PlayerTest {
 		assertTrue(map.get(2, 0) instanceof BDRock);
 		//check that player has replaced the rocks old position
 		assertTrue(map.get(1,0) instanceof BDPlayer);
-
 	}
 
 	@Test
@@ -137,7 +135,5 @@ public class PlayerTest {
 
 		assertTrue(map.get(3, 2) instanceof BDWall);
 		assertTrue(map.get(2, 2) instanceof BDPlayer);
-
 	}
-
 }

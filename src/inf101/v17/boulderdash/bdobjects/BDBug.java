@@ -23,11 +23,11 @@ import inf101.v17.boulderdash.maps.BDMap;
  */
 public class BDBug extends AbstractBDKillingObject implements IBDKillable {
 	/**
-	 * The spritesheet which holds the animation of the bug
+	 * The spritesheet which holds the sprites of the bug
 	 */
 	private static Optional<ArrayList<ImagePattern>> spriteList = Optional.empty();
 	/**
-	 * Kepps track of which animationimage to show
+	 * Kepps track of which animation-image to show
 	 */
 	private int animationCounter;
 

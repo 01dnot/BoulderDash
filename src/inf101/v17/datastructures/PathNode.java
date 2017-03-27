@@ -109,6 +109,4 @@ public class PathNode implements Comparable  {
 	public boolean equals(Object obj) {
 		return this.getPosition().equals(((PathNode)obj).getPosition());
 	}
-
-
 }

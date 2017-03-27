@@ -19,11 +19,19 @@ public class BDAIPlayer extends BDPlayer {
 	 * An implementation of a playerbot
 	 * @author danielnotland
 	 */
-	
+
+	/**
+	 * The stack of directions to get to a diamond
+	 */
 	private Deque<Direction> directionPath;
-	
+
+	/**
+	 * Indicates if player has is currently searching for a diamond
+	 */
 	private boolean lookingForDiamond;
-	
+	/**
+	 * The amount of diamonds AIPlayer have picked up.
+	 */
 	private int diamondCounter = 0;
 
 	public BDAIPlayer(BDMap owner) {
@@ -33,13 +41,15 @@ public class BDAIPlayer extends BDPlayer {
 
 	@Override
 	public void keyPressed(KeyCode key){
-		
 	}
 
 	@Override
 	public void step() {
-		
-		
+		//if found diamond, player isnt looking for diamond anymore
+		if(diamondCounter != diamondCnt) {
+			lookingForDiamond = false;
+			diamondCounter = diamondCnt;
+		}
 		if(!owner.getDiamonds().isEmpty() && !lookingForDiamond) {
 			lookingForDiamond = true;
 			directionPath = findRoute(this.getPosition(), owner.getDiamonds().pop().getPosition());
@@ -47,14 +57,14 @@ public class BDAIPlayer extends BDPlayer {
 		if(lookingForDiamond) {
 			askedToGo = directionPath.pop();
 		}
-		if(diamondCounter != diamondCnt) {
-			lookingForDiamond = false;
-			diamondCounter = diamondCnt;
-		}
-		
 		super.step();
 	}
-
+	/**
+	 * A method that finds the route from a point to a point, and returns it as a stack. 
+	 * @param From. The position the AIplayer came from.
+	 * @param To. The position the AIplayer want to get.
+	 * @return Deque. A Deque where the first direction the player have to move in on top.
+	 */
 	public Deque<Direction> findRoute(Position from, Position to) {
 		ArrayList<PathNode> closedSet = new ArrayList<>();
 		ArrayList<PathNode> openSet = new ArrayList<>();
@@ -92,6 +102,12 @@ public class BDAIPlayer extends BDPlayer {
 		return null;
 
 	}
+	/**
+	 * A method thats takes a route of positions and returns a stack of directions on how to get there
+	 * in the opposite order
+	 * @param pathToGo. The stack of the positions you want to go
+	 * @return A stack of dirctions in opposite order.
+	 */
 	private Deque<Direction> reconstructPath(Deque<Position> pathToGo) {
 		Deque<Direction> directionDeque = new ArrayDeque<>();
 		Position tempTo = pathToGo.pop();
@@ -101,11 +117,16 @@ public class BDAIPlayer extends BDPlayer {
 			tempTo = tempFrom;
 			tempFrom = pathToGo.pop();
 			directionDeque.push(findDirection(tempFrom, tempTo));
-			
+
 		}
 		return directionDeque;
 	}
-
+	/**
+	 * A methid that check which directions you need to go to get from a position to another position.
+	 * @param tempFrom. The start Position.
+	 * @param tempTo. The positions you want to move to.
+	 * @return The direction of the tempTo from tempFrom.
+	 */
 	private Direction findDirection(Position tempFrom, Position tempTo) {
 		if(tempFrom.getX() > tempTo.getX()) {
 			return Direction.WEST;
@@ -118,7 +139,11 @@ public class BDAIPlayer extends BDPlayer {
 		}
 		return null;
 	}
-
+	/**
+	 * Checks if you can move in any of the directions. And returns a list of positions you can move.
+	 * @param A position pos.
+	 * @return An arrayList of the positions you can move to.
+	 */
 	private ArrayList<Position> checkSurroundings(Position pos) {
 		ArrayList<Position> posList = new ArrayList<>();
 
@@ -135,6 +160,5 @@ public class BDAIPlayer extends BDPlayer {
 			posList.add(pos.moveDirection(Direction.EAST));
 		}
 		return posList;
-
 	}
 }

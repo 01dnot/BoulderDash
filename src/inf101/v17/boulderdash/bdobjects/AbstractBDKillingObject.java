@@ -17,7 +17,6 @@ import javafx.scene.media.AudioClip;
 public abstract class AbstractBDKillingObject extends AbstractBDMovingObject {
 
 
-
 	public AbstractBDKillingObject(BDMap owner) {
 		super(owner);
 	}

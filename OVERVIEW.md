@@ -5,18 +5,20 @@
 IBDObject -> IBDMovingObject -> IBDKillable
 
 IBDObject:					The main interface that all game-objects must implement. 
-										Its most important functionality is the step-method.
+							Its most important functionality is the step-method.
 
 
 IBDMovingObject:	The main interface that all objects that move in the must implement.
-										Its most important functionality is the prepareMove-method, it prepares the move
-										of an object, and get executed at the next step. Inherit from IBDObject.
+					Its most important functionality is the prepareMove-method, it prepares the move
+					of an object, and get executed at the next step. Inherit from IBDObject.
 
 
 IBDKillable:			An interface that all object that can be killed must implement. 
-										An object that can be killed can always move. Inherit from IBDMovingObject.
+					    An object that can be killed can always move. Inherit from IBDMovingObject.
 
 
+The interfaces extends each other. Beginning with the simplest form, IBDObject, then IBDMovingObject and at last the IBDKillable. 
+This means a object cant be killable and not movable, but must be movable to be killable. The interfaces are used so you can store different types of tile-types in a grid. It also makes sure all gameobjects contains important methods such as step() and getPosition().
 
 #Abstract-classes:
 
@@ -68,18 +70,25 @@ Remember to add the character of the class in BDMap in the method makeObject().
 
 #The step method
 
-Each object have a step()-method that gets called by BDMap. This updates the objects and their positions. Works as the framerate in the game.
+Each object have a step()-method that gets called by BDMap. This updates the objects and their positions. Works as the framerate in the game. In the step method most of the game logic is executed. 
 
 #The diamond falling feature
 - If falling, a timeout start lasting 3 steps before fall starts.
 - It checks that the falling object isnt on the lowest possible row.
 - Then it start falling if the tile under itself is either BDEmpty, or a killable object.
 
+#Fancy Rocks/Diamonds
+The falling rocks/diamonds is a feature that makes rocks and diamonds thats is on top of other rocks, 
+diamonds or walls fall to the side if there is an empty tile to their side and the position under their side. If this is the case on both side of the rock. It falls to a random side.
+
 #Animations
-The animations images is kept inside the objects. The image of an object gets updated in every step, and that creates the animation. 
+The animations images is kept inside the objects. The image of an object gets changed by the animationCounter in every step, and that creates the animation. 
+The image is sent to the GUI using the getColor() method.
 
 #Sounds
-The sounds implemented in the objects as an optional, and gets played of through the prepareMove methods.
+All moving objects can make sounds. It is made Optional and is send from the Objects in the prepareMove methods.
+
+#Why we need the getPosition() method
 
 #Assets credits
 Credits to Czirkos Zoltan for the sound. [source](https://bitbucket.org/czirkoszoltan/gdash) 
