@@ -163,7 +163,9 @@ public class BDBug extends AbstractBDKillingObject implements IBDKillable {
 		BUG_KILLED_SOUND.play();
 		Collection<Position> toDiamonds = owner.getNearestEmpty(owner.getPosition(this), DEATH_DIAMONDS);
 		for (Position p : toDiamonds) {
-			owner.set(p.getX(), p.getY(), new BDDiamond(owner));
+			BDDiamond diamond = new BDDiamond(owner);
+			owner.addDiamond(diamond);
+			owner.set(p.getX(), p.getY(), diamond);
 		}
 	}
 

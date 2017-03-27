@@ -25,7 +25,7 @@ AbstractBDObject -> AbstractBDMovingObject -> AbstractBDFKillingObject -> Abstra
 
 
 
-AbstractBDObject:						Implements the common features of all game-object. 
+AbstractBDObject:			Implements the common features of all game-object. 
 
 
 AbstractBDMovingObject:		Implements AbstractBDObject and the common features of all movable game-objects.
@@ -62,7 +62,7 @@ BDPlayer:		Inherit from AbstractBDMovingObject and implements the interface of I
 
 
 #Adding a new object
-To add a new object you must create a class that implement one of the abstract BD classes. 
+To add a new object you must create a class that implement one of the abstract BD classes or extends existing objects.
 You can then add features by overriding/creating new methods and field variables.
 Remember to add the character of the class in BDMap in the method makeObject().
 

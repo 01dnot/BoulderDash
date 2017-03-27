@@ -1,12 +1,15 @@
 package inf101.v17.boulderdash.maps;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Deque;
 import java.util.List;
 import inf101.v17.boulderdash.Direction;
 import inf101.v17.boulderdash.IllegalMoveException;
 import inf101.v17.boulderdash.Position;
+import inf101.v17.boulderdash.bdobjects.BDAIPlayer;
 import inf101.v17.boulderdash.bdobjects.BDBug;
 import inf101.v17.boulderdash.bdobjects.BDDiamond;
 import inf101.v17.boulderdash.bdobjects.BDEmpty;
@@ -39,11 +42,16 @@ public class BDMap {
 	 * A separate reference to the player, since it is accessed quite
 	 * frequently.
 	 */
-	protected BDPlayer player;
-/**
- * A hashmap keeping the positions of the objects with objects as key.
- */
+	protected BDAIPlayer player;
+	/**
+	 * A hashmap keeping the positions of the objects with objects as key.
+	 */
 	protected HashMap<IBDObject,Position> hashMap = new HashMap<IBDObject,Position>();
+	/**
+	 * A list of all diamonds in game.
+	 */
+	private Deque<BDDiamond> diamondList = new ArrayDeque<>();
+
 	/**
 	 * Main constructor of this class.
 	 * 
@@ -59,7 +67,7 @@ public class BDMap {
 	 */
 	public BDMap(IGrid<Character> map) {
 		grid = new MyGrid<IBDObject>(map.getWidth(), map.getHeight(), null);
-		this.player = new BDPlayer(this);
+		this.player = new BDAIPlayer(this);
 		hashMap.put(player, player.getPosition()); // Putter player i hashmap
 		fillGrid(map);
 	}
@@ -158,7 +166,9 @@ public class BDMap {
 			return new BDWall(this);
 		} else if (c == 'd') {
 			totalDiamonds++;
-			return new BDDiamond(this);
+			BDDiamond diamond = new BDDiamond(this);
+			diamondList.add(diamond);
+			return diamond;
 		}  else if(c == 'r') {
 			return new BDRock(this);
 		} else if (c == 'b') {
@@ -289,6 +299,16 @@ public class BDMap {
 	private boolean isValidPosition(int x, int y) {
 		return x > -1 && x < grid.getWidth() && y > -1 && y < grid.getHeight();
 	}
+	
+	public void addDiamond(BDDiamond diamond) {
+		diamondList.add(diamond);
+	}
+	public Deque<BDDiamond> getDiamonds() {
+		return diamondList;
+	}
+	public BDDiamond popDiamond() {
+		return diamondList.pop();
+	}
 
 	/**
 	 * set tile (x, y) to element.
@@ -313,6 +333,6 @@ public class BDMap {
 				grid.get(x, y).step();
 			}
 		}
-		
+
 	}
 }

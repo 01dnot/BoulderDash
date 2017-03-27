@@ -1,0 +1,26 @@
+25 25
+*************************
+*prr####rr#*#rrr###d#d#b*
+*#######rd#*##r#rr#b*###*
+*#  *r  ########rr#d#r#r*
+*#  d r ******##rr#b*#d#*
+*# b#  r########rr#d*# #*
+*#   ###******##rr#b*b b*
+*#######r#######dr#d*   *
+*# r #r #r #r ##dr#b*   *
+*###############dr#d*r r*
+*# d  d  d  d ##dr#b*# #*
+*# #d #d #d # ##dr#d*d d*
+*# b# b# b# b ##dr#b*#r#*
+*#  d  d  d   ##dr#d*ddd*
+*# b# b# b# b ##dr#b*dbd*
+*#  d  d  d   ##dr#d*ddd*
+*# r# r# r# r ##dr#b*dbd*
+**************##dr#d*ddd*
+*rrrrrrrrr   *##b# #####*
+*ddddddddd d d* ###  b  *
+*######d## # #          *
+*b b b b b d d d   rr   *
+*          # # #d  ##   *
+* b b b b b b  b# bd    *
+*************************
