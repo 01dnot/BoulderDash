@@ -59,7 +59,6 @@ public class BDAIPlayer extends BDPlayer {
 		ArrayList<PathNode> closedSet = new ArrayList<>();
 		ArrayList<PathNode> openSet = new ArrayList<>();
 		Deque<Position> pathToGo = new ArrayDeque<>();
-System.out.println(from);
 		PathNode start = new PathNode(from, to);
 		openSet.add(start);
 		PathNode current = start;
@@ -68,7 +67,7 @@ System.out.println(from);
 			current = openSet.get(0);
 			System.out.println(current.getPosition());
 			if((current.getPosition()).equals(to)) {
-				return reconstruct_path(pathToGo);	
+				return reconstructPath(pathToGo);	
 			}
 			openSet.remove(current);
 			closedSet.add(current);
@@ -93,7 +92,7 @@ System.out.println(from);
 		return null;
 
 	}
-	private Deque<Direction> reconstruct_path(Deque<Position> pathToGo) {
+	private Deque<Direction> reconstructPath(Deque<Position> pathToGo) {
 		Deque<Direction> directionDeque = new ArrayDeque<>();
 		Position tempTo = pathToGo.pop();
 		Position tempFrom = pathToGo.pop();

@@ -23,7 +23,7 @@ import javafx.stage.Stage;
  *
  */
 public class BoulderDashGUI extends Application implements EventHandler<KeyEvent> {
-	
+
 	/**
 	 * Tilesize
 	 */
@@ -56,12 +56,12 @@ public class BoulderDashGUI extends Application implements EventHandler<KeyEvent
 		cam = new Camera(0, 0,theMap);
 		this.stage = stage;
 		double spacing = 10;
-		
+
 		Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
 
 		Group root = new Group();
 		int padding = BDMapComponent.CELL_PADDING;
-		
+
 		double height = Math.min(primaryScreenBounds.getHeight() - 100, cam.getHeigth()*(TILE_SIZE+padding)+padding + 40);		
 		double width = Math.min(primaryScreenBounds.getWidth() - 40, cam.getWidth()*(TILE_SIZE+padding));			
 
@@ -109,7 +109,7 @@ public class BoulderDashGUI extends Application implements EventHandler<KeyEvent
 		timer.start();
 		stage.show();
 		scene.heightProperty().addListener((obs, old, newH) -> {
-			
+
 		});
 	}
 

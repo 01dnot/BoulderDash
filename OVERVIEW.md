@@ -75,4 +75,13 @@ Each object have a step()-method that gets called by BDMap. This updates the obj
 - It checks that the falling object isnt on the lowest possible row.
 - Then it start falling if the tile under itself is either BDEmpty, or a killable object.
 
+#Animations
+The animations images is kept inside the objects. The image of an object gets updated in every step, and that creates the animation. 
 
+#Sounds
+The sounds implemented in the objects as an optional, and gets played of through the prepareMove methods.
+
+#Assets credits
+Credits to Czirkos Zoltan for the sound. [source](https://bitbucket.org/czirkoszoltan/gdash) 
+
+Credits to Peter Broadribb for the sprites from the original Boulder Dash game. [source](http://codeincomplete.com/posts/javascript-boulderdash/graphics.pdf)

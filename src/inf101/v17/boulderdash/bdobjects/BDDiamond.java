@@ -25,7 +25,7 @@ public class BDDiamond extends AbstractBDFallingObject {
 	final private int N_SOUNDS = 8;
 
 	private static ArrayList<AudioClip> diamondSounds = new ArrayList<>();
-	
+
 	public BDDiamond(BDMap owner) {
 		super(owner);
 		animationCounter = 0;
@@ -44,17 +44,17 @@ public class BDDiamond extends AbstractBDFallingObject {
 		 * initialize the images for player 
 		 */
 		if(!spriteList.isPresent()) {
-		int startFrom = 0;
-		Image fileImage = new Image("file:graphics/diamondSprite.png");
-		ArrayList<ImagePattern> tempList = new ArrayList<>();
-		for(int i = 0; i < N_SPRITES; i++) {
-			tempList.add(i,new ImagePattern(fileImage, startFrom++, 0, N_SPRITES, 1, true));
+			int startFrom = 0;
+			Image fileImage = new Image("file:graphics/diamondSprite.png");
+			ArrayList<ImagePattern> tempList = new ArrayList<>();
+			for(int i = 0; i < N_SPRITES; i++) {
+				tempList.add(i,new ImagePattern(fileImage, startFrom++, 0, N_SPRITES, 1, true));
+			}
+			spriteList = Optional.of(tempList);
 		}
-		spriteList = Optional.of(tempList);
-	}
 
-	return spriteList.get().get(animationCounter);
-}
+		return spriteList.get().get(animationCounter);
+	}
 
 	@Override
 	public void step() {

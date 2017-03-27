@@ -54,7 +54,7 @@ public class PlayerTest {
 
 
 	}
-	
+
 	@Test
 	public void playerMovesOldPositionIsEmptyTest() {
 		IGrid<Character> grid = new MyGrid<>(4, 4, ' ');
@@ -70,7 +70,7 @@ public class PlayerTest {
 		((BDPlayer)player).keyPressed(KeyCode.LEFT);
 		map.step();
 		assertEquals(map.get(1,2), player);
-		
+
 		//check that old position is now BDEmpty
 		assertTrue(map.get(2,2) instanceof BDEmpty);
 	}
@@ -115,9 +115,9 @@ public class PlayerTest {
 		assertTrue(map.get(2, 0) instanceof BDRock);
 		//check that player has replaced the rocks old position
 		assertTrue(map.get(1,0) instanceof BDPlayer);
-		
+
 	}
-	
+
 	@Test
 	public void playerCantGoTest() {
 		IGrid<Character> grid = new MyGrid<>(4, 4, ' ');
@@ -130,11 +130,11 @@ public class PlayerTest {
 		Position playerPos = new Position(2,2);
 		IBDObject player = map.get(playerPos);
 		assertTrue(player instanceof BDPlayer);
-		
+
 		// move player right
-				((BDPlayer)player).keyPressed(KeyCode.RIGHT);
-				map.step();
-				
+		((BDPlayer)player).keyPressed(KeyCode.RIGHT);
+		map.step();
+
 		assertTrue(map.get(3, 2) instanceof BDWall);
 		assertTrue(map.get(2, 2) instanceof BDPlayer);
 

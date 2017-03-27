@@ -299,7 +299,7 @@ public class BDMap {
 	private boolean isValidPosition(int x, int y) {
 		return x > -1 && x < grid.getWidth() && y > -1 && y < grid.getHeight();
 	}
-	
+
 	public void addDiamond(BDDiamond diamond) {
 		diamondList.add(diamond);
 	}

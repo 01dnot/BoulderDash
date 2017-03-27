@@ -19,7 +19,7 @@ import inf101.v17.datastructures.IGrid;
 import inf101.v17.datastructures.MyGrid;
 
 public class BugTest {
-	
+
 	private BDMap map;
 
 	@Before
@@ -109,7 +109,7 @@ public class BugTest {
 		map = new BDMap(grid);
 		IBDObject obj = map.get(2, 2);
 		assertTrue(obj instanceof BDBug);
-		
+
 		((BDBug)obj).kill();
 
 		for(int i=0; i<grid.getHeight(); i++) {
@@ -123,7 +123,7 @@ public class BugTest {
 		fail("Bug didnt spray any diamonds when killed");
 
 	}
-	
+
 	@Test
 	public void bugMovesInRightDirectionTest() {
 		IGrid<Character> grid = new MyGrid<>(5, 5, ' ');
@@ -131,7 +131,7 @@ public class BugTest {
 		map = new BDMap(grid);
 		IBDObject obj = map.get(2, 2);
 		assertTrue(obj instanceof BDBug); 
-		
+
 		try {
 			((BDBug)obj).prepareMoveTo(Direction.EAST, Optional.empty());
 		} catch (IllegalMoveException e) {
@@ -142,7 +142,7 @@ public class BugTest {
 		map.step();
 		map.step();
 		assertTrue(map.get(3,2) instanceof BDBug);
-		
+
 		try {
 			((BDBug)obj).prepareMoveTo(Direction.WEST, Optional.empty());
 		} catch (IllegalMoveException e) {

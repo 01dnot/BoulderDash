@@ -15,9 +15,9 @@ import inf101.v17.boulderdash.maps.BDMap;
  *
  */
 public class BDWall extends AbstractBDObject {
-	
+
 	private static Optional<ImagePattern> image = Optional.empty();
-	
+
 
 	public BDWall(BDMap owner) {
 		super(owner);

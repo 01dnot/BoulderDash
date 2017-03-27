@@ -46,12 +46,12 @@ public abstract class AbstractBDObject implements IBDObject {
 	public void setMap(BDMap map) {
 		this.owner = map;
 	}
-	
+
 	@Override
 	public boolean isEmpty() {
 		return false;
 	}
-	
+
 	@Override
 	public boolean isKillable() {
 		return false;

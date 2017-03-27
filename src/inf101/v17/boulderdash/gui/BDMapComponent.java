@@ -29,7 +29,7 @@ public class BDMapComponent extends Canvas {
 				getHeight() / map.getHeight() - CELL_PADDING);
 		double scale = (getHeight()-vboxHeigth) / (cam.getHeigth()*(cellDim+CELL_PADDING)+CELL_PADDING);
 		g.scale(scale, scale);
-		
+
 
 		int width = cam.getWidth(), height = cam.getHeigth();
 		for (int x = 0; x < width; x++) {

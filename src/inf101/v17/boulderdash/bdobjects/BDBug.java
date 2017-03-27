@@ -30,7 +30,7 @@ public class BDBug extends AbstractBDKillingObject implements IBDKillable {
 	 * Kepps track of which animationimage to show
 	 */
 	private int animationCounter;
-	
+
 	private static final int N_SPRITES = 8; //Holds the total amount of sprites
 	/**
 	 * The soundclip of the bug killed.

@@ -29,10 +29,18 @@ public class Camera {
 		offsetMaxY = map.getHeight() - height;
 
 	}
+	/**
+	 * Updates the camera position depending on the location of the player
+	 * @param player
+	 */
 	public void step(BDPlayer player) {
 		setX(player.getX() - width/2);
 		setY(player.getY() - height/2);
 	}
+	/**
+	 * Set the cameras x cordinate
+	 * @param x
+	 */
 	public void setX(int x) {
 		if(x > offsetMaxX) {
 			this.x = offsetMaxX;
@@ -42,6 +50,10 @@ public class Camera {
 			this.x = x;
 		}
 	}
+	/**
+	 * Set the cameras y cordinate
+	 * @param y
+	 */
 	public void setY(int y) {
 		if(y > offsetMaxY) {
 			this.y = offsetMaxY;
@@ -51,16 +63,31 @@ public class Camera {
 			this.y = y;
 		}
 	}
-
+	/**
+	 * Returns the cameras x cordinate
+	 * @return
+	 */
 	public int getX() {
 		return x;
 	}
+	/**
+	 * Returns the cameras y cordinate
+	 * @return
+	 */
 	public int getY() {
 		return y;
 	}
+	/**
+	 * Returns the width of the camera
+	 * @return
+	 */
 	public int getWidth() {
 		return width;
 	}
+	/**
+	 * Returns the height of the camera
+	 * @return
+	 */
 	public int getHeigth() {
 		return height;
 	}

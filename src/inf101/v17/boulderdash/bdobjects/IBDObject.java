@@ -66,12 +66,12 @@ public interface IBDObject {
 	 * Execute one time step of the object's behavior
 	 */
 	void step();
-	
+
 	/**
 	 * @return True if object represents an empty space
 	 */
 	boolean isEmpty();
-	
+
 	/**
 	 * @return True if object can be killed by another falling object
 	 */
